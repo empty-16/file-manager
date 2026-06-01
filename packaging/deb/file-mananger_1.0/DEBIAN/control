@@ -1,0 +1,7 @@
+Package: file-manager
+Version: 1.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: Empty-16 yassirboukiri99@gmail.com
+Description: A Windows 11-style file manager built with PyQt6
