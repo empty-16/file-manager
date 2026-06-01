@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a fully-featured desktop **file manager** built with **PyQt6**, styled to replicate the Windows 11 Fluent Design language. It runs on Linux and supports multi-tab browsing, list and icon views, a built-in terminal, file operations (copy/cut/paste/delete/rename), recent files, favorites, trash management, and deep search.
+A personal file manager for Linux built with PyQt6, designed around my own workflow. Styled after the Windows 11 Fluent Design language — still a work in progress, but already supports multi-tab browsing, list and icon views, a built-in terminal, file operations, recent files, favorites, trash management, and deep search
 
 The entire application lives in a single Python file (`file-manager.py`) of ~7,700 lines, with no external dependencies beyond PyQt6.
 
