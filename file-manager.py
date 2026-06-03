@@ -71,10 +71,10 @@ WIN11_LIGHT_QSS = """
 
 /* ── Global reset ───────────────────────────────────────────────────────── */
 QWidget {
-    background-color: #F3F3F3;
+    background-color: #E8E6E2;
     color: #1A1A1A;
     font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
-    font-size: 13px;
+    font-size: 16px;
     selection-background-color: #0078D4;
     selection-color: #FFFFFF;
     border: none;
@@ -83,26 +83,26 @@ QWidget {
 
 /* ── Main window ─────────────────────────────────────────────────────────── */
 QMainWindow {
-    background-color: #F3F3F3;
+    background-color: #E8E6E2;
 }
 QMainWindow::separator {
-    background: #E5E5E5;
+    background: #D4D2CE;
     width: 1px;
     height: 1px;
 }
 
 /* ── Nav bar (arrows + address + search — sits below tab strip) ──────────── */
 QWidget#navBar {
-    background-color: #F9F9F9;
-    border-bottom: 1px solid #E5E5E5;
+    background-color: #E4E2DE;
+    border-bottom: 1px solid #D4D2CE;
 }
 QWidget#navBar QToolButton {
     background: transparent;
     color: #1A1A1A;
     border: none;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 13px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 16px;
 }
 QWidget#navBar QToolButton:hover {
     background-color: rgba(0, 0, 0, 0.0373);
@@ -117,19 +117,19 @@ QWidget#navBar QToolButton:disabled {
 
 /* ── Toolbar (navigation bar) ────────────────────────────────────────────── */
 QToolBar {
-    background-color: #F9F9F9;
+    background-color: #E4E2DE;
     border: none;
-    border-bottom: 1px solid #E5E5E5;
-    padding: 3px 4px;
+    border-bottom: 1px solid #D4D2CE;
+    padding: 4px 5px;
     spacing: 2px;
 }
 QToolBar QToolButton {
     background: transparent;
     color: #1A1A1A;
     border: none;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 13px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 16px;
 }
 QToolBar QToolButton:hover {
     background-color: rgba(0, 0, 0, 0.0373);
@@ -144,12 +144,12 @@ QToolBar QToolButton:disabled {
 
 /* ── Custom title bar ───────────────────────────────────────────────────── */
 QWidget#titleBar {
-    background-color: #F9F9F9;
-    border-bottom: 1px solid #E5E5E5;
+    background-color: #E4E2DE;
+    border-bottom: 1px solid #D4D2CE;
 }
 QLabel#titleLabel {
     color: #1A1A1A;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     background: transparent;
 }
@@ -182,52 +182,52 @@ QToolButton#winClose:pressed {
 /* ── Tab widget & tab bar ────────────────────────────────────────────────── */
 QTabWidget::pane {
     border: none;
-    background-color: #F3F3F3;
+    background-color: #E8E6E2;
 }
 QTabBar {
-    background-color: #F9F9F9;
-    border-bottom: 1px solid #E5E5E5;
+    background-color: #E4E2DE;
+    border-bottom: 1px solid #D4D2CE;
 }
 QTabBar::tab {
     background: transparent;
     color: #5C5C5C;
     border: none;
     border-bottom: 2px solid transparent;
-    padding: 6px 16px;
+    padding: 7px 19px;
     margin: 0px;
-    min-width: 170px;
-    max-width: 170px;
-    font-size: 13px;
+    min-width: 204px;
+    max-width: 204px;
+    font-size: 16px;
     font-weight: 400;
 }
 QTabBar::tab:selected {
     color: #1A1A1A;
     border-bottom: 2px solid #0078D4;
-    min-width: 170px;
-    max-width: 170px;
+    min-width: 204px;
+    max-width: 204px;
     background: transparent;
 }
 QTabBar::tab:hover:!selected {
     color: #1A1A1A;
     background-color: rgba(0, 0, 0, 0.0373);
-    min-width: 170px;
-    max-width: 170px;
-    border-radius: 4px 4px 0 0;
+    min-width: 204px;
+    max-width: 204px;
+    border-radius: 5px 5px 0 0;
 }
 
 
 /* ── Command bar (tool strip) ────────────────────────────────────────────── */
 QWidget#commandBar {
-    background-color: #F9F9F9;
-    border-bottom: 1px solid #E5E5E5;
+    background-color: #E4E2DE;
+    border-bottom: 1px solid #D4D2CE;
 }
 QWidget#commandBar QPushButton {
     background: transparent;
     color: #1A1A1A;
     border: none;
-    border-radius: 4px;
-    padding: 4px 10px;
-    font-size: 13px;
+    border-radius: 5px;
+    padding: 5px 12px;
+    font-size: 16px;
     font-weight: 500;
 
 }
@@ -243,16 +243,16 @@ QWidget#commandBar QPushButton:disabled {
 }
 QWidget#commandBar QPushButton:checked {
     background-color: rgba(0, 0, 0, 0.0578);
-    border: 1px solid #D4D4D4;
+    border: 1px solid #C4C2BE;
 }
 QWidget#commandBar QFrame {
-    color: #E5E5E5;
-    background-color: #E5E5E5;
+    color: #D4D2CE;
+    background-color: #D4D2CE;
 }
 
 /* ── Splitter ────────────────────────────────────────────────────────────── */
 QSplitter::handle {
-    background-color: #E5E5E5;
+    background-color: #D4D2CE;
 }
 QSplitter::handle:horizontal {
     width: 1px;
@@ -260,27 +260,27 @@ QSplitter::handle:horizontal {
 
 /* ── Sidebar ─────────────────────────────────────────────────────────────── */
 QWidget#sidebar {
-    background-color: #F3F3F3;
-    border-right: 1px solid #E5E5E5;
+    background-color: #E8E6E2;
+    border-right: 1px solid #D4D2CE;
 }
 QWidget#sidebar QLabel {
     color: #5C5C5C;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 400;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.10px;
     background: transparent;
-    padding: 0 10px;
+    padding: 0 12px;
 }
 QWidget#sidebar QPushButton {
     background: transparent;
     color: #1A1A1A;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     text-align: left;
-    padding: 3px 25px;
-    font-size: 15px;
+    padding: 4px 30px;
+    font-size: 16px;
     font-weight: 500;
-    margin: 1px 6px;
+    margin: 1px 7px;
 }
 QWidget#sidebar QPushButton:hover {
     background-color: rgba(0, 0, 0, 0.0373);
@@ -295,13 +295,13 @@ QScrollArea {
 }
 QScrollBar:vertical {
     background: transparent;
-    width: 6px;
+    width: 7px;
     margin: 0;
 }
 QScrollBar::handle:vertical {
     background: rgba(0, 0, 0, 0.20);
-    border-radius: 3px;
-    min-height: 20px;
+    border-radius: 4px;
+    min-height: 24px;
 }
 QScrollBar::handle:vertical:hover {
     background: rgba(0, 0, 0, 0.35);
@@ -315,13 +315,13 @@ QScrollBar::sub-page:vertical {
 }
 QScrollBar:horizontal {
     background: transparent;
-    height: 6px;
+    height: 7px;
     margin: 0;
 }
 QScrollBar::handle:horizontal {
     background: rgba(0, 0, 0, 0.20);
-    border-radius: 3px;
-    min-width: 20px;
+    border-radius: 4px;
+    min-width: 24px;
 }
 QScrollBar::handle:horizontal:hover {
     background: rgba(0, 0, 0, 0.35);
@@ -334,51 +334,51 @@ QScrollBar::sub-line:horizontal {
 
 /* ── File list (QTreeView) ───────────────────────────────────────────────── */
 QTreeView {
-    background-color: #F3F3F3;
-    alternate-background-color: #F3F3F3;
+    background-color: #E8E6E2;
+    alternate-background-color: #E8E6E2;
     border: none;
     show-decoration-selected: 1;
     outline: 0;
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 300;
 }
 QTreeView::item {
-    height: 32px;
+    height: 38px;
     border-radius: 0px;
     margin: 0px;
-    padding: 0px 4px;
+    padding: 0px 5px;
 }
 QTreeView::item:hover {
     background-color: rgba(0, 0, 0, 0.0373);
 }
 QTreeView::item:selected {
-    background-color: #CCE4F7;
+    background-color: #C5D8EF;
     color: #1A1A1A;
     border-radius: 0px;
 }
 QTreeView::item:selected:active {
-    background-color: #CCE4F7;
+    background-color: #C5D8EF;
     color: #1A1A1A;
     border-radius: 0px;
 }
 QTreeView::item:selected:!active {
-    background-color: #E0EEFA;
+    background-color: #D4E4F2;
     color: #1A1A1A;
     border-radius: 0px;
 }
 QHeaderView {
-    background-color: #F3F3F3;
+    background-color: #E8E6E2;
     border: none;
-    border-bottom: 1px solid #E5E5E5;
+    border-bottom: 1px solid #D4D2CE;
 }
 QHeaderView::section {
-    background-color: #F3F3F3;
+    background-color: #E8E6E2;
     color: #5C5C5C;
     border: none;
-    border-right: 1px solid #E5E5E5;
-    padding: 4px 8px;
-    font-size: 12px;
-    height: 20px;
+    border-right: 1px solid #D4D2CE;
+    padding: 5px 10px;
+    font-size: 14px;
+    height: 24px;
 }
 QHeaderView::section:hover {
     background-color: rgba(0, 0, 0, 0.0373);
@@ -401,20 +401,20 @@ QHeaderView::up-arrow {
 
 /* ── Breadcrumb / address bar ────────────────────────────────────────────── */
 QWidget#crumbPage {
-    background-color: #FFFFFF;
-    border: 1px solid #D4D4D4;
-    border-radius: 4px;
+    background-color: #EDECEA;
+    border: 1px solid #C4C2BE;
+    border-radius: 5px;
 }
 QWidget#crumbPage:hover {
-    border-color: #A0A0A0;
+    border-color: #A09080;
 }
 QWidget#crumbPage QPushButton {
     background: transparent;
     color: #1A1A1A;
     border: none;
-    border-radius: 3px;
+    border-radius: 4px;
     padding: 2px 0;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
 }
 QWidget#crumbPage QPushButton:hover {
@@ -424,12 +424,12 @@ QWidget#crumbPage QPushButton:pressed {
     background-color: rgba(0, 0, 0, 0.0916);
 }
 QLineEdit {
-    background-color: #FFFFFF;
+    background-color: #EDECEA;
     color: #1A1A1A;
     border: 2px solid #0078D4;
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-size: 13px;
+    border-radius: 5px;
+    padding: 2px 10px;
+    font-size: 16px;
     selection-background-color: #0078D4;
     selection-color: #FFFFFF;
 }
@@ -439,16 +439,16 @@ QLineEdit:hover {
 
 /* ── Menus ───────────────────────────────────────────────────────────────── */
 QMenu {
-    background-color: #FFFFFF;
-    border: 1px solid #D4D4D4;
-    border-radius: 8px;
+    background-color: #EDECEA;
+    border: 1px solid #C4C2BE;
+    border-radius: 10px;
 }
 QMenu::item {
     background: transparent;
     color: #1A1A1A;
-    border-radius: 4px;
-    padding: 7px 28px 7px 12px;
-    font-size: 15px;
+    border-radius: 5px;
+    padding: 8px 34px 8px 14px;
+    font-size: 18px;
     font-weight: 300;
 }
 QMenu::item:selected {
@@ -460,48 +460,48 @@ QMenu::item:disabled {
 }
 QMenu::separator {
     height: 1px;
-    background: #E5E5E5;
-    margin: 4px 8px;
+    background: #D4D2CE;
+    margin: 5px 10px;
 }
 QMenu::indicator {
-    width: 16px;
-    height: 16px;
-    margin-left: 4px;
+    width: 19px;
+    height: 19px;
+    margin-left: 5px;
 }
 QMenu::indicator:checked {
     image: none;
 }
 QMenu::indicator:checked {
     background-color: gray;
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
 /* ── Dialogs ─────────────────────────────────────────────────────────────── */
 QDialog {
-    background-color: #F3F3F3;
+    background-color: #E8E6E2;
 }
 QFormLayout QLabel {
     color: green;
-    font-size: 12px;
+    font-size: 14px;
 }
 QDialogButtonBox QPushButton,
 QDialog QPushButton {
-    background-color: #F9F9F9;
+    background-color: #E4E2DE;
     color: #1A1A1A;
-    border: 1px solid #D4D4D4;
-    border-radius: 4px;
-    padding: 5px 16px;
-    font-size: 13px;
-    min-width: 80px;
+    border: 1px solid #C4C2BE;
+    border-radius: 5px;
+    padding: 6px 19px;
+    font-size: 16px;
+    min-width: 96px;
 }
 QDialogButtonBox QPushButton:hover,
 QDialog QPushButton:hover {
-    background-color: #F3F3F3;
-    border-color: #A0A0A0;
+    background-color: #E8E6E2;
+    border-color: #A09080;
 }
 QDialogButtonBox QPushButton:pressed,
 QDialog QPushButton:pressed {
-    background-color: #EBEBEB;
+    background-color: #DCDBD8;
     color: #5C5C5C;
 }
 QDialogButtonBox QPushButton:default,
@@ -521,21 +521,21 @@ QDialog QPushButton:default:pressed {
 
 /* ── Message boxes ───────────────────────────────────────────────────────── */
 QMessageBox {
-    background-color: #F3F3F3;
+    background-color: #E8E6E2;
 }
 QMessageBox QLabel {
     color: #1A1A1A;
-    font-size: 13px;
+    font-size: 16px;
 }
 
 /* ── Search bar ──────────────────────────────────────────────────────────── */
 QWidget#searchBar {
-    background-color: #FFFFFF;
-    border: 1px solid #D4D4D4;
-    border-radius: 4px;
+    background-color: #EDECEA;
+    border: 1px solid #C4C2BE;
+    border-radius: 5px;
 }
 QWidget#searchBar:hover {
-    border-color: #A0A0A0;
+    border-color: #A09080;
 }
 QWidget#searchBar[active="true"] {
     border: 2px solid #0078D4;
@@ -545,7 +545,7 @@ QWidget#searchBar QLineEdit {
     border: none;
     border-radius: 0;
     padding: 0px 2px;
-    font-size: 13px;
+    font-size: 16px;
     color: #1A1A1A;
     selection-background-color: #0078D4;
     selection-color: #FFFFFF;
@@ -553,10 +553,10 @@ QWidget#searchBar QLineEdit {
 QWidget#searchBar QPushButton {
     background: transparent;
     border: none;
-    border-radius: 3px;
+    border-radius: 4px;
     padding: 2px;
     color: #5C5C5C;
-    font-size: 13px;
+    font-size: 16px;
 }
 QWidget#searchBar QPushButton:hover {
     background-color: rgba(0, 0, 0, 0.0578);
@@ -565,16 +565,16 @@ QWidget#searchBar QPushButton:hover {
 
 /* ── Input dialog ────────────────────────────────────────────────────────── */
 QInputDialog {
-    background-color: #F3F3F3;
+    background-color: #E8E6E2;
 }
 QInputDialog QLabel {
     color: #1A1A1A;
 }
 QInputDialog QLineEdit {
-    background-color: #FFFFFF;
-    border: 1px solid #D4D4D4;
-    border-radius: 4px;
-    padding: 5px 8px;
+    background-color: #EDECEA;
+    border: 1px solid #C4C2BE;
+    border-radius: 5px;
+    padding: 6px 10px;
 }
 QInputDialog QLineEdit:focus {
     border: 2px solid #0078D4;
@@ -582,29 +582,29 @@ QInputDialog QLineEdit:focus {
 
 /* ── List widget (open-with dialog) ──────────────────────────────────────── */
 QListWidget {
-    background-color: #FFFFFF;
-    border: 1px solid #D4D4D4;
-    border-radius: 4px;
+    background-color: #EDECEA;
+    border: 1px solid #C4C2BE;
+    border-radius: 5px;
     outline: 0;
 }
 QListWidget::item {
-    border-radius: 4px;
-    padding: 5px 8px;
-    margin: 1px 3px;
+    border-radius: 5px;
+    padding: 6px 10px;
+    margin: 1px 4px;
     color: #1A1A1A;
 }
 QListWidget::item:hover {
     background-color: rgba(0, 0, 0, 0.0373);
 }
 QListWidget::item:selected {
-    background-color: #CCE4F7;
+    background-color: #C5D8EF;
     color: #1A1A1A;
 }
 
 /* ── Details panel ───────────────────────────────────────────────────────── */
 QWidget#detailsPanel {
-    background-color: #F9F9F9;
-    border-left: 1px solid #E5E5E5;
+    background-color: #E4E2DE;
+    border-left: 1px solid #D4D2CE;
 }
 QWidget#detailsPanel QLabel {
     background: transparent;
@@ -613,12 +613,12 @@ QWidget#detailsPanel QLabel {
 
 /* ── Tooltip ─────────────────────────────────────────────────────────────── */
 QToolTip {
-    background-color: #FFFFFF;
+    background-color: #EDECEA;
     color: #1A1A1A;
-    border: 1px solid #D4D4D4;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 12px;
+    border: 1px solid #C4C2BE;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
 }
 
 """
@@ -633,7 +633,7 @@ QWidget {
     background-color: #202020;
     color: #FFFFFF;
     font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
-    font-size: 13px;
+    font-size: 16px;
     selection-background-color: #0078D4;
     selection-color: #FFFFFF;
     border: none;
@@ -650,11 +650,16 @@ QMainWindow::separator {
     height: 1px;
 }
 
-
 /* ── Custom title bar ───────────────────────────────────────────────────── */
 QWidget#titleBar {
     background-color: #202020;
     border-bottom: 1px solid #3A3A3A;
+}
+QLabel#titleLabel {
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 500;
+    background: transparent;
 }
 QToolButton#winMin, QToolButton#winMax {
     background-color: #202020;
@@ -681,6 +686,7 @@ QToolButton#winClose:pressed {
     background-color: #A32314;
     color: #FFFFFF;
 }
+
 /* ── Nav bar (arrows + address + search — sits below tab strip) ──────────── */
 QWidget#navBar {
     background-color: #2C2C2C;
@@ -690,9 +696,9 @@ QWidget#navBar QToolButton {
     background: transparent;
     color: #FFFFFF;
     border: none;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 13px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 16px;
 }
 QWidget#navBar QToolButton:hover {
     background-color: rgba(255, 255, 255, 0.0605);
@@ -710,16 +716,16 @@ QToolBar {
     background-color: #2C2C2C;
     border: none;
     border-bottom: 1px solid #3A3A3A;
-    padding: 3px 4px;
+    padding: 4px 5px;
     spacing: 2px;
 }
 QToolBar QToolButton {
     background: transparent;
     color: #FFFFFF;
     border: none;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 13px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 16px;
 }
 QToolBar QToolButton:hover {
     background-color: rgba(255, 255, 255, 0.0605);
@@ -746,24 +752,27 @@ QTabBar::tab {
     color: #ABABAB;
     border: none;
     border-bottom: 2px solid transparent;
-    padding: 6px 16px;
+    padding: 7px 19px;
     margin: 0px;
-    min-width: 120px;
-    max-width: 120px;
-    font-size: 13px;
-    font-weight: 600;
+    min-width: 204px;
+    max-width: 204px;
+    font-size: 16px;
+    font-weight: 400;
 }
 QTabBar::tab:selected {
     color: #FFFFFF;
     border-bottom: 2px solid #0078D4;
+    min-width: 204px;
+    max-width: 204px;
     background: transparent;
 }
 QTabBar::tab:hover:!selected {
     color: #FFFFFF;
     background-color: rgba(255, 255, 255, 0.0605);
-    border-radius: 4px 4px 0 0;
+    min-width: 204px;
+    max-width: 204px;
+    border-radius: 5px 5px 0 0;
 }
-
 
 /* ── Command bar ─────────────────────────────────────────────────────────── */
 QWidget#commandBar {
@@ -774,9 +783,9 @@ QWidget#commandBar QPushButton {
     background: transparent;
     color: #FFFFFF;
     border: none;
-    border-radius: 4px;
-    padding: 4px 10px;
-    font-size: 13px;
+    border-radius: 5px;
+    padding: 5px 12px;
+    font-size: 16px;
     font-weight: 500;
 }
 QWidget#commandBar QPushButton:hover:enabled {
@@ -813,22 +822,22 @@ QWidget#sidebar {
 }
 QWidget#sidebar QLabel {
     color: #ABABAB;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 400;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.10px;
     background: transparent;
-    padding: 0 10px;
+    padding: 0 12px;
 }
 QWidget#sidebar QPushButton {
     background: transparent;
     color: #FFFFFF;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     text-align: left;
-    padding: 3px 25px;
-    font-size: 15px;
+    padding: 4px 30px;
+    font-size: 16px;
     font-weight: 500;
-    margin: 1px 6px;
+    margin: 1px 7px;
 }
 QWidget#sidebar QPushButton:hover {
     background-color: rgba(255, 255, 255, 0.0605);
@@ -843,13 +852,13 @@ QScrollArea {
 }
 QScrollBar:vertical {
     background: transparent;
-    width: 6px;
+    width: 7px;
     margin: 0;
 }
 QScrollBar::handle:vertical {
     background: rgba(255, 255, 255, 0.18);
-    border-radius: 3px;
-    min-height: 20px;
+    border-radius: 4px;
+    min-height: 24px;
 }
 QScrollBar::handle:vertical:hover {
     background: rgba(255, 255, 255, 0.32);
@@ -863,13 +872,13 @@ QScrollBar::sub-page:vertical {
 }
 QScrollBar:horizontal {
     background: transparent;
-    height: 6px;
+    height: 7px;
     margin: 0;
 }
 QScrollBar::handle:horizontal {
     background: rgba(255, 255, 255, 0.18);
-    border-radius: 3px;
-    min-width: 20px;
+    border-radius: 4px;
+    min-width: 24px;
 }
 QScrollBar::handle:horizontal:hover {
     background: rgba(255, 255, 255, 0.32);
@@ -887,14 +896,14 @@ QTreeView {
     border: none;
     show-decoration-selected: 1;
     outline: 0;
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 300;
 }
 QTreeView::item {
-    height: 32px;
+    height: 38px;
     border-radius: 0px;
     margin: 0px;
-    padding: 0px 4px;
+    padding: 0px 5px;
 }
 QTreeView::item:hover {
     background-color: rgba(255, 255, 255, 0.0605);
@@ -907,10 +916,12 @@ QTreeView::item:selected {
 QTreeView::item:selected:active {
     background-color: #2D4F6C;
     color: #FFFFFF;
+    border-radius: 0px;
 }
 QTreeView::item:selected:!active {
     background-color: #263D54;
     color: #FFFFFF;
+    border-radius: 0px;
 }
 QHeaderView {
     background-color: #202020;
@@ -922,24 +933,34 @@ QHeaderView::section {
     color: #ABABAB;
     border: none;
     border-right: 1px solid #3A3A3A;
-    padding: 4px 8px;
-    font-size: 12px;
-    height: 20px;
+    padding: 5px 10px;
+    font-size: 14px;
+    height: 24px;
 }
 QHeaderView::section:hover {
     background-color: rgba(255, 255, 255, 0.0605);
     color: #FFFFFF;
 }
-QHeaderView::section:first { border-left: none; }
-QHeaderView::section:last  { border-right: none; }
-QHeaderView::down-arrow { image: none; width: 0; }
-QHeaderView::up-arrow   { image: none; width: 0; }
+QHeaderView::section:first {
+    border-left: none;
+}
+QHeaderView::section:last {
+    border-right: none;
+}
+QHeaderView::down-arrow {
+    image: none;
+    width: 0;
+}
+QHeaderView::up-arrow {
+    image: none;
+    width: 0;
+}
 
 /* ── Breadcrumb / address bar ────────────────────────────────────────────── */
 QWidget#crumbPage {
     background-color: #3A3A3A;
     border: 1px solid #555555;
-    border-radius: 4px;
+    border-radius: 5px;
 }
 QWidget#crumbPage:hover {
     border-color: #707070;
@@ -948,9 +969,9 @@ QWidget#crumbPage QPushButton {
     background: transparent;
     color: #FFFFFF;
     border: none;
-    border-radius: 3px;
+    border-radius: 4px;
     padding: 2px 0;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
 }
 QWidget#crumbPage QPushButton:hover {
@@ -963,9 +984,9 @@ QLineEdit {
     background-color: #3A3A3A;
     color: #FFFFFF;
     border: 2px solid #0078D4;
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-size: 13px;
+    border-radius: 5px;
+    padding: 2px 10px;
+    font-size: 16px;
     selection-background-color: #0078D4;
     selection-color: #FFFFFF;
 }
@@ -977,14 +998,14 @@ QLineEdit:hover {
 QMenu {
     background-color: #2C2C2C;
     border: 1px solid #4A4A4A;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 QMenu::item {
     background: transparent;
     color: #FFFFFF;
-    border-radius: 4px;
-    padding: 7px 28px 7px 12px;
-    font-size: 15px;
+    border-radius: 5px;
+    padding: 8px 34px 8px 14px;
+    font-size: 18px;
     font-weight: 300;
 }
 QMenu::item:selected {
@@ -997,7 +1018,19 @@ QMenu::item:disabled {
 QMenu::separator {
     height: 1px;
     background: #3A3A3A;
-    margin: 4px 8px;
+    margin: 5px 10px;
+}
+QMenu::indicator {
+    width: 19px;
+    height: 19px;
+    margin-left: 5px;
+}
+QMenu::indicator:checked {
+    image: none;
+}
+QMenu::indicator:checked {
+    background-color: gray;
+    border-radius: 4px;
 }
 
 /* ── Dialogs ─────────────────────────────────────────────────────────────── */
@@ -1006,17 +1039,17 @@ QDialog {
 }
 QFormLayout QLabel {
     color: #4EC94E;
-    font-size: 12px;
+    font-size: 14px;
 }
 QDialogButtonBox QPushButton,
 QDialog QPushButton {
     background-color: #2C2C2C;
     color: #FFFFFF;
     border: 1px solid #4A4A4A;
-    border-radius: 4px;
-    padding: 5px 16px;
-    font-size: 13px;
-    min-width: 80px;
+    border-radius: 5px;
+    padding: 6px 19px;
+    font-size: 16px;
+    min-width: 96px;
 }
 QDialogButtonBox QPushButton:hover,
 QDialog QPushButton:hover {
@@ -1038,6 +1071,10 @@ QDialogButtonBox QPushButton:default:hover,
 QDialog QPushButton:default:hover {
     background-color: #1A86DC;
 }
+QDialogButtonBox QPushButton:default:pressed,
+QDialog QPushButton:default:pressed {
+    background-color: #006CBD;
+}
 
 /* ── Message boxes ───────────────────────────────────────────────────────── */
 QMessageBox {
@@ -1045,14 +1082,14 @@ QMessageBox {
 }
 QMessageBox QLabel {
     color: #FFFFFF;
-    font-size: 13px;
+    font-size: 16px;
 }
 
 /* ── Search bar ──────────────────────────────────────────────────────────── */
 QWidget#searchBar {
     background-color: #3A3A3A;
     border: 1px solid #555555;
-    border-radius: 4px;
+    border-radius: 5px;
 }
 QWidget#searchBar:hover {
     border-color: #707070;
@@ -1065,7 +1102,7 @@ QWidget#searchBar QLineEdit {
     border: none;
     border-radius: 0;
     padding: 0px 2px;
-    font-size: 13px;
+    font-size: 16px;
     color: #FFFFFF;
     selection-background-color: #0078D4;
     selection-color: #FFFFFF;
@@ -1073,27 +1110,45 @@ QWidget#searchBar QLineEdit {
 QWidget#searchBar QPushButton {
     background: transparent;
     border: none;
-    border-radius: 3px;
+    border-radius: 4px;
     padding: 2px;
     color: #ABABAB;
-    font-size: 13px;
+    font-size: 16px;
 }
 QWidget#searchBar QPushButton:hover {
     background-color: rgba(255, 255, 255, 0.0837);
     color: #FFFFFF;
 }
 
+/* ── Input dialog ────────────────────────────────────────────────────────── */
+QInputDialog {
+    background-color: #202020;
+}
+QInputDialog QLabel {
+    color: #FFFFFF;
+}
+QInputDialog QLineEdit {
+    background-color: #3A3A3A;
+    border: 1px solid #555555;
+    border-radius: 5px;
+    padding: 6px 10px;
+    color: #FFFFFF;
+}
+QInputDialog QLineEdit:focus {
+    border: 2px solid #0078D4;
+}
+
 /* ── List widget ─────────────────────────────────────────────────────────── */
 QListWidget {
     background-color: #2C2C2C;
     border: 1px solid #4A4A4A;
-    border-radius: 4px;
+    border-radius: 5px;
     outline: 0;
 }
 QListWidget::item {
-    border-radius: 4px;
-    padding: 5px 8px;
-    margin: 1px 3px;
+    border-radius: 5px;
+    padding: 6px 10px;
+    margin: 1px 4px;
     color: #FFFFFF;
 }
 QListWidget::item:hover {
@@ -1119,30 +1174,13 @@ QToolTip {
     background-color: #2C2C2C;
     color: #FFFFFF;
     border: 1px solid #4A4A4A;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 12px;
-}
-
-/* ── Input dialog ────────────────────────────────────────────────────────── */
-QInputDialog {
-    background-color: #202020;
-}
-QInputDialog QLabel {
-    color: #FFFFFF;
-}
-QInputDialog QLineEdit {
-    background-color: #3A3A3A;
-    border: 1px solid #555555;
-    border-radius: 4px;
-    padding: 5px 8px;
-    color: #FFFFFF;
-}
-QInputDialog QLineEdit:focus {
-    border: 2px solid #0078D4;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
 }
 
 """
+
 
 
 def _apply_win11_dark_palette(app: "QApplication"):
@@ -1173,31 +1211,31 @@ def _apply_win11_dark_palette(app: "QApplication"):
 
 
 def _apply_win11_palette(app: "QApplication"):
-    """Set the QPalette to match Win11 light colours so native widgets blend in."""
+    """Set the QPalette to match warm greige light colours so native widgets blend in."""
     pal = QPalette()
     # Window / base surfaces
-    pal.setColor(QPalette.ColorRole.Window,          QColor("#F3F3F3"))
+    pal.setColor(QPalette.ColorRole.Window,          QColor("#E8E6E2"))
     pal.setColor(QPalette.ColorRole.WindowText,      QColor("#1A1A1A"))
-    pal.setColor(QPalette.ColorRole.Base,            QColor("#FFFFFF"))
-    pal.setColor(QPalette.ColorRole.AlternateBase,   QColor("#F3F3F3"))
-    pal.setColor(QPalette.ColorRole.ToolTipBase,     QColor("#FFFFFF"))
+    pal.setColor(QPalette.ColorRole.Base,            QColor("#EDECEA"))
+    pal.setColor(QPalette.ColorRole.AlternateBase,   QColor("#E8E6E2"))
+    pal.setColor(QPalette.ColorRole.ToolTipBase,     QColor("#EDECEA"))
     pal.setColor(QPalette.ColorRole.ToolTipText,     QColor("#1A1A1A"))
     # Text
     pal.setColor(QPalette.ColorRole.Text,            QColor("#1A1A1A"))
     pal.setColor(QPalette.ColorRole.BrightText,      QColor("#FFFFFF"))
-    pal.setColor(QPalette.ColorRole.PlaceholderText, QColor("#838383"))
+    pal.setColor(QPalette.ColorRole.PlaceholderText, QColor("#9A8C7C"))
     # Buttons
-    pal.setColor(QPalette.ColorRole.Button,          QColor("#F9F9F9"))
+    pal.setColor(QPalette.ColorRole.Button,          QColor("#E4E2DE"))
     pal.setColor(QPalette.ColorRole.ButtonText,      QColor("#1A1A1A"))
     # Highlights
     pal.setColor(QPalette.ColorRole.Highlight,       QColor("#0078D4"))
     pal.setColor(QPalette.ColorRole.HighlightedText, QColor("#FFFFFF"))
     # Borders / midtones
-    pal.setColor(QPalette.ColorRole.Mid,             QColor("#E5E5E5"))
-    pal.setColor(QPalette.ColorRole.Midlight,        QColor("#F0F0F0"))
-    pal.setColor(QPalette.ColorRole.Dark,            QColor("#D4D4D4"))
-    pal.setColor(QPalette.ColorRole.Shadow,          QColor("#BFBFBF"))
-    pal.setColor(QPalette.ColorRole.Light,           QColor("#FFFFFF"))
+    pal.setColor(QPalette.ColorRole.Mid,             QColor("#D4D2CE"))
+    pal.setColor(QPalette.ColorRole.Midlight,        QColor("#E2E0DC"))
+    pal.setColor(QPalette.ColorRole.Dark,            QColor("#C4C2BE"))
+    pal.setColor(QPalette.ColorRole.Shadow,          QColor("#C0AE98"))
+    pal.setColor(QPalette.ColorRole.Light,           QColor("#EDECEA"))
     # Disabled group — keep readable
     pal.setColor(QPalette.ColorGroup.Disabled,
                  QPalette.ColorRole.WindowText,      QColor("#9E9E9E"))
@@ -1227,7 +1265,7 @@ def _fluent_font(size: int = 14) -> QFont:
     return f
 
 
-def _apply_fluent_icon(widget, icon_cp: str, label: str = "", icon_size: int = 14):
+def _apply_fluent_icon(widget, icon_cp: str, label: str = "", icon_size: int = 17):
     """Set widget text to glyph+label and apply the Fluent icon font."""
     widget.setText(f"{icon_cp}  {label}" if label else icon_cp)
     widget.setFont(_fluent_font(icon_size))
@@ -1580,7 +1618,7 @@ def _make_archive_icon(size: int = 256) -> QIcon:
 # Per-path thumbnail cache for the icon-view image previews.
 # Maps absolute file path → QPixmap (already cropped/scaled to THUMB_SIZE).
 _thumb_cache: dict[str, "QPixmap"] = {}
-THUMB_SIZE = 96   # pixels — matches the 110×110 grid with a comfortable margin
+THUMB_SIZE = 115   # pixels — matches the 110×110 grid with a comfortable margin
 
 # Keys used in _icon_cache for our hand-drawn icons
 _BUILTIN_FOLDER_KEY  = "__builtin_folder__"
@@ -2146,8 +2184,10 @@ class ImagePreviewDelegate(IconDelegate):
         from PyQt6.QtWidgets import QStyleOptionViewItem, QApplication, QStyle
         opt = QStyleOptionViewItem(option)
         self.initStyleOption(opt, index)
-        # Clear the icon so the style doesn't paint it again; we'll do it below
+        # Clear icon and text so the style only draws background/selection;
+        # we render both the thumbnail and label ourselves below.
         opt.icon = QIcon()
+        opt.text = ""
         style = QApplication.style()
         style.drawControl(QStyle.ControlElement.CE_ItemViewItem, opt, painter)
 
@@ -2210,7 +2250,10 @@ class ImagePreviewDelegate(IconDelegate):
         )
         if not text_rect.isEmpty():
             painter.save()
-            painter.setFont(opt.font)
+            # Use app default font — never inherit opt.font which may be the
+            # Fluent icon font set on toolbar buttons.
+            from PyQt6.QtWidgets import QApplication as _App
+            painter.setFont(_App.font())
             color = (opt.palette.highlightedText().color()
                      if option.state & QStyle.StateFlag.State_Selected
                      else opt.palette.text().color())
@@ -2220,8 +2263,7 @@ class ImagePreviewDelegate(IconDelegate):
             elided = fm.elidedText(name, Qt.TextElideMode.ElideRight, text_rect.width())
             painter.drawText(
                 text_rect,
-                Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop
-                | Qt.TextFlag.TextWordWrap,
+                Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop,
                 elided,
             )
             painter.restore()
@@ -2253,7 +2295,7 @@ class BreadcrumbBar(QStackedWidget):
         # ── page 0: crumb view ────────────────────────────────────────────────
         self._crumb_page = QWidget(); self._crumb_page.setObjectName("crumbPage")
         self._crumb_layout = QHBoxLayout(self._crumb_page)
-        self._crumb_layout.setContentsMargins(4, 0, 4, 0)
+        self._crumb_layout.setContentsMargins(5, 0, 5, 0)
         self._crumb_layout.setSpacing(0)
         self._crumb_layout.addStretch()
 
@@ -2269,7 +2311,7 @@ class BreadcrumbBar(QStackedWidget):
         self.addWidget(self._edit)         # index 1
         self.setCurrentIndex(0)
 
-        self.setFixedHeight(28)
+        self.setFixedHeight(34)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
     # ── public API ────────────────────────────────────────────────────────────
@@ -2335,7 +2377,7 @@ class BreadcrumbBar(QStackedWidget):
                 chev = QPushButton("›")
                 chev.setStyleSheet("QPushButton { color: palette(placeholderText); font-size: 11px; padding: 2px 2px; }")
                 chev.setCursor(Qt.CursorShape.PointingHandCursor)
-                chev.setFixedWidth(16)
+                chev.setFixedWidth(19)
                 chev.clicked.connect(
                     lambda checked, fp=full_path: self._show_chevron_menu(fp, chev)
                 )
@@ -2426,7 +2468,7 @@ class FileView(QTreeView):
     new_folder_req   = pyqtSignal()   # Ctrl+N
     new_file_req     = pyqtSignal()   # Ctrl+F
 
-    _ICON_W = 22   # px width of the icon region in column 0
+    _ICON_W = 26   # px width of the icon region in column 0
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -2508,7 +2550,7 @@ class FileView(QTreeView):
         # drag pixmap: first file's icon, scaled to 32×32
         icon = icons[0] if icons else None
         if icon and not icon.isNull():
-            px = icon.pixmap(QSize(32, 32))
+            px = icon.pixmap(QSize(38, 38))
         else:
             px = QPixmap(32, 32)
             px.fill(Qt.GlobalColor.transparent)
@@ -2647,12 +2689,12 @@ class IconFileView(QListView):
 
 def _sidebar_icon(label: str) -> QIcon:
     """
-    Return a 16×16 minimal icon for each sidebar label.
+    Return a 24×24 minimal icon for each sidebar label.
     Clean thin strokes, geometric, monochrome — no fills except where essential.
     """
     from PyQt6.QtCore import QPointF, QRectF
     from PyQt6.QtGui import QPolygonF
-    S = 16
+    S = 24
     px = QPixmap(S, S)
     px.fill(Qt.GlobalColor.transparent)
     p = QPainter(px)
@@ -2672,128 +2714,128 @@ def _sidebar_icon(label: str) -> QIcon:
         # Clean house outline: roof + walls, door cutout
         p.setBrush(QBrush(BLUE))
         roof = QPainterPath()
-        roof.moveTo(8, 2); roof.lineTo(14.5, 8); roof.lineTo(1.5, 8)
+        roof.moveTo(10, 2); roof.lineTo(17.4, 10); roof.lineTo(1.8, 10)
         roof.closeSubpath()
         p.fillPath(roof, QBrush(BLUE))
         body = QPainterPath()
-        body.addRoundedRect(3, 7.5, 10, 7, 1, 1)
+        body.addRoundedRect(4, 9.0, 12, 8, 1, 1)
         p.fillPath(body, QBrush(BLUE))
         # door — white cutout
         door = QPainterPath()
-        door.addRoundedRect(6, 11, 4, 4, 0.8, 0.8)
+        door.addRoundedRect(7, 13, 5, 5, 0.96, 0.96)
         p.fillPath(door, QBrush(WHITE))
 
     elif key == "desktop":
         # Thin monitor outline
-        p.setPen(stroke(1.4))
+        p.setPen(stroke(1.68))
         p.setBrush(Qt.BrushStyle.NoBrush)
-        p.drawRoundedRect(QRectF(1, 2, 14, 9), 1.5, 1.5)
-        p.drawLine(6, 11, 10, 11)   # stand top
-        p.drawLine(8, 11, 8, 13)    # pole
-        p.drawLine(5, 13, 11, 13)   # base
+        p.drawRoundedRect(QRectF(1, 2, 17, 11), 1.8, 1.8)
+        p.drawLine(7, 13, 12, 13)   # stand top
+        p.drawLine(10, 13, 10, 16)    # pole
+        p.drawLine(6, 16, 13, 16)   # base
 
     elif key == "documents":
         # Minimal doc outline with fold
-        p.setPen(stroke(1.3))
+        p.setPen(stroke(1.56))
         p.setBrush(Qt.BrushStyle.NoBrush)
         doc = QPainterPath()
-        doc.moveTo(3, 1); doc.lineTo(10, 1); doc.lineTo(13, 4)
-        doc.lineTo(13, 15); doc.lineTo(3, 15); doc.closeSubpath()
+        doc.moveTo(4, 1); doc.lineTo(12, 1); doc.lineTo(16, 5)
+        doc.lineTo(16, 18); doc.lineTo(4, 18); doc.closeSubpath()
         p.drawPath(doc)
         # fold
         fold = QPainterPath()
-        fold.moveTo(10, 1); fold.lineTo(10, 4); fold.lineTo(13, 4)
+        fold.moveTo(12, 1); fold.lineTo(12, 5); fold.lineTo(16, 5)
         p.drawPath(fold)
         # two text lines
-        p.setPen(stroke(1.2))
-        p.drawLine(5, 8, 11, 8)
-        p.drawLine(QPointF(5, 10.5), QPointF(9, 10.5))
+        p.setPen(stroke(1.44))
+        p.drawLine(6, 10, 13, 10)
+        p.drawLine(QPointF(6, 12.6), QPointF(11, 12.6))
 
     elif key == "downloads":
         # Down arrow — clean stroked
-        p.setPen(stroke(1.6))
-        p.drawLine(8, 1, 8, 10)
+        p.setPen(stroke(1.92))
+        p.drawLine(10, 1, 10, 12)
         arr = QPainterPath()
-        arr.moveTo(4.5, 7); arr.lineTo(8, 11); arr.lineTo(11.5, 7)
+        arr.moveTo(5.4, 8); arr.lineTo(10, 13); arr.lineTo(13.8, 8)
         p.drawPath(arr)
         # tray
-        p.drawLine(2, 13, 14, 13)
-        p.drawLine(2, 13, 2, 15)
-        p.drawLine(14, 13, 14, 15)
+        p.drawLine(2, 16, 17, 16)
+        p.drawLine(2, 16, 2, 18)
+        p.drawLine(17, 16, 17, 18)
 
     elif key == "music":
         # Clean music note — stroked
-        p.setPen(stroke(1.4))
+        p.setPen(stroke(1.68))
         p.setBrush(Qt.BrushStyle.NoBrush)
         # note head
-        p.drawEllipse(QRectF(4, 10, 4.5, 3.5))
+        p.drawEllipse(QRectF(5, 12, 5.4, 4.2))
         # stem
-        p.drawLine(QPointF(8.5, 11.5), QPointF(8.5, 3))
+        p.drawLine(QPointF(10.2, 13.8), QPointF(10.2, 4))
         # flag
         flag = QPainterPath()
-        flag.moveTo(8.5, 3); flag.lineTo(13, 5); flag.lineTo(8.5, 7)
+        flag.moveTo(10.2, 4); flag.lineTo(16, 6); flag.lineTo(10.2, 8)
         p.drawPath(flag)
 
     elif key == "pictures":
         # Simple framed landscape — outline only
-        p.setPen(stroke(1.3))
+        p.setPen(stroke(1.56))
         p.setBrush(Qt.BrushStyle.NoBrush)
-        p.drawRoundedRect(QRectF(1, 2, 14, 12), 1.5, 1.5)
+        p.drawRoundedRect(QRectF(1, 2, 17, 14), 1.8, 1.8)
         # mountain
         mtn = QPainterPath()
-        mtn.moveTo(2, 14); mtn.lineTo(6, 8); mtn.lineTo(10, 11)
-        mtn.lineTo(12, 8.5); mtn.lineTo(15, 12)
+        mtn.moveTo(2, 17); mtn.lineTo(7, 10); mtn.lineTo(12, 13)
+        mtn.lineTo(14, 10.2); mtn.lineTo(18, 14)
         p.drawPath(mtn)
         # sun circle
-        p.drawEllipse(10, 4, 3, 3)
+        p.drawEllipse(12, 5, 4, 4)
 
     elif key == "videos":
         # Play button in a rounded rect outline
-        p.setPen(stroke(1.3))
+        p.setPen(stroke(1.56))
         p.setBrush(Qt.BrushStyle.NoBrush)
-        p.drawRoundedRect(1, 2, 14, 12, 2, 2)
+        p.drawRoundedRect(1, 2, 17, 14, 2, 2)
         p.setPen(Qt.PenStyle.NoPen)
         p.setBrush(QBrush(BLUE))
         play = QPainterPath()
         play.addPolygon(QPolygonF([
-            QPointF(6, 5.5), QPointF(6, 10.5), QPointF(11.5, 8)
+            QPointF(7, 6.6), QPointF(7, 12.6), QPointF(13.8, 10)
         ]))
         play.closeSubpath()
         p.fillPath(play, QBrush(BLUE))
 
     elif key == "recent":
         # Clock — thin circle + hands
-        p.setPen(stroke(1.3))
+        p.setPen(stroke(1.56))
         p.setBrush(Qt.BrushStyle.NoBrush)
-        p.drawEllipse(1, 1, 14, 14)
-        p.setPen(stroke(1.5))
-        p.drawLine(8, 8, 8, 4)      # hour hand
-        p.drawLine(QPointF(8, 8), QPointF(11.5, 10))  # minute hand
+        p.drawEllipse(1, 1, 17, 17)
+        p.setPen(stroke(1.8))
+        p.drawLine(10, 10, 10, 5)      # hour hand
+        p.drawLine(QPointF(10, 10), QPointF(13.8, 12))  # minute hand
 
     elif key == "trash":
         # Clean bin — outline only
-        p.setPen(stroke(1.3))
+        p.setPen(stroke(1.56))
         p.setBrush(Qt.BrushStyle.NoBrush)
         # lid
-        p.drawLine(3, 4, 13, 4)
-        p.drawRoundedRect(QRectF(6, 1.5, 4, 2.5), 0.5, 0.5)   # handle
+        p.drawLine(4, 5, 16, 5)
+        p.drawRoundedRect(QRectF(7, 1.8, 5, 3.0), 0.6, 0.6)   # handle
         # body trapezoid
         body = QPainterPath()
-        body.moveTo(4, 4); body.lineTo(12, 4)
-        body.lineTo(11, 15); body.lineTo(5, 15)
+        body.moveTo(5, 5); body.lineTo(14, 5)
+        body.lineTo(13, 18); body.lineTo(6, 18)
         body.closeSubpath()
         p.drawPath(body)
         # stripes
-        p.drawLine(QPointF(7, 6.5), QPointF(6.5, 13))
-        p.drawLine(QPointF(9, 6.5), QPointF(9.5, 13))
+        p.drawLine(QPointF(8, 7.8), QPointF(7.8, 16))
+        p.drawLine(QPointF(11, 7.8), QPointF(11.4, 16))
 
     else:
         # fallback: minimal folder outline
-        p.setPen(stroke(1.3))
+        p.setPen(stroke(1.56))
         p.setBrush(Qt.BrushStyle.NoBrush)
-        p.drawRoundedRect(QRectF(1, 5, 14, 9), 1.5, 1.5)
+        p.drawRoundedRect(QRectF(1, 6, 17, 11), 1.8, 1.8)
         tab = QPainterPath()
-        tab.addRoundedRect(1, 3, 5.5, 3, 1, 1)
+        tab.addRoundedRect(1, 4, 6.6, 4, 1, 1)
         p.drawPath(tab)
 
     p.end()
@@ -2809,7 +2851,7 @@ def _rr(x, y, w, h, r) -> QPainterPath:
 
 def _cmd_icon(key: str, ink: "QColor | None" = None) -> QIcon:
     """
-    Paint a 16×16 minimal icon for command bar buttons.
+    Paint a 24×24 minimal icon for command bar buttons.
     ink: stroke colour; defaults to app palette WindowText so it adapts to theme.
     """
     from PyQt6.QtCore import QPointF, QRectF
@@ -2817,7 +2859,7 @@ def _cmd_icon(key: str, ink: "QColor | None" = None) -> QIcon:
     if ink is None:
         app = QApplication.instance()
         ink = app.palette().color(QPalette.ColorRole.WindowText) if app else QColor("#1A1A1A")
-    S = 16
+    S = 24
     px = QPixmap(S, S)
     px.fill(Qt.GlobalColor.transparent)
     p = QPainter(px)
@@ -2833,139 +2875,139 @@ def _cmd_icon(key: str, ink: "QColor | None" = None) -> QIcon:
 
     if key == "new_folder":
         # folder outline + plus
-        p.drawRoundedRect(QRectF(1, 5, 14, 10), 1.5, 1.5)
+        p.drawRoundedRect(QRectF(1, 6, 17, 12), 1.8, 1.8)
         tab = QPainterPath()
-        tab.addRoundedRect(1, 3, 5, 3, 1, 1)
+        tab.addRoundedRect(1, 4, 6, 4, 1, 1)
         p.drawPath(tab)
         # plus overlay (filled blue badge)
         p.setPen(Qt.PenStyle.NoPen)
         p.setBrush(QBrush(QColor("#0078D4")))
-        p.drawRoundedRect(QRectF(9, 8.5, 6, 5), 1, 1)
-        p.setPen(QPen(QColor("#FFFFFF"), 1.3,
+        p.drawRoundedRect(QRectF(11, 10.2, 7, 6), 1, 1)
+        p.setPen(QPen(QColor("#FFFFFF"), 1.56,
                       Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
-        p.drawLine(QPointF(12, 9.5), QPointF(12, 12.5))
-        p.drawLine(QPointF(10.5, 11), QPointF(13.5, 11))
+        p.drawLine(QPointF(14, 11.4), QPointF(14, 15.0))
+        p.drawLine(QPointF(12.6, 13), QPointF(16.2, 13))
 
     elif key == "new_file":
         # doc outline with fold
         p.setBrush(Qt.BrushStyle.NoBrush)
         doc = QPainterPath()
-        doc.moveTo(3, 1); doc.lineTo(9.5, 1); doc.lineTo(13, 4.5)
-        doc.lineTo(13, 15); doc.lineTo(3, 15); doc.closeSubpath()
+        doc.moveTo(4, 1); doc.lineTo(11.4, 1); doc.lineTo(16, 5.4)
+        doc.lineTo(16, 18); doc.lineTo(4, 18); doc.closeSubpath()
         p.drawPath(doc)
         fold = QPainterPath()
-        fold.moveTo(9.5, 1); fold.lineTo(9.5, 4.5); fold.lineTo(13, 4.5)
+        fold.moveTo(11.4, 1); fold.lineTo(11.4, 5.4); fold.lineTo(16, 5.4)
         p.drawPath(fold)
         # plus overlay
         p.setPen(Qt.PenStyle.NoPen)
         p.setBrush(QBrush(QColor("#0078D4")))
-        p.drawRoundedRect(QRectF(9, 9, 6, 5.5), 1, 1)
-        p.setPen(QPen(QColor("#FFFFFF"), 1.3,
+        p.drawRoundedRect(QRectF(11, 11, 7, 6.6), 1, 1)
+        p.setPen(QPen(QColor("#FFFFFF"), 1.56,
                       Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
-        p.drawLine(QPointF(12, 10), QPointF(12, 13.5))
-        p.drawLine(QPointF(10.5, 11.75), QPointF(13.5, 11.75))
+        p.drawLine(QPointF(14, 12), QPointF(14, 16.2))
+        p.drawLine(QPointF(12.6, 14.1), QPointF(16.2, 14.1))
 
     elif key == "cut":
         # minimalist scissors — two circles + blades
-        p.setPen(stroke(1.4))
-        p.drawEllipse(QRectF(1.5, 10, 4, 4))
-        p.drawEllipse(QRectF(10.5, 10, 4, 4))
+        p.setPen(stroke(1.68))
+        p.drawEllipse(QRectF(1.8, 12, 5, 5))
+        p.drawEllipse(QRectF(12.6, 12, 5, 5))
         # blades
-        p.drawLine(QPointF(4.5, 12), QPointF(8, 8))
-        p.drawLine(QPointF(11.5, 12), QPointF(8, 8))
-        p.drawLine(8, 8, 3, 2)
-        p.drawLine(8, 8, 13, 2)
+        p.drawLine(QPointF(5.4, 14), QPointF(10, 10))
+        p.drawLine(QPointF(13.8, 14), QPointF(10, 10))
+        p.drawLine(10, 10, 4, 2)
+        p.drawLine(10, 10, 16, 2)
 
     elif key == "copy":
         # two overlapping page outlines
-        p.setPen(stroke(1.3))
-        p.drawRoundedRect(5, 4, 9, 11, 1, 1)   # back
+        p.setPen(stroke(1.56))
+        p.drawRoundedRect(6, 5, 11, 13, 1, 1)   # back
         app = QApplication.instance()
         bg = app.palette().color(QPalette.ColorRole.Window) if app else QColor("#F3F3F3")
         p.setBrush(QBrush(bg))
-        p.drawRoundedRect(2, 1, 9, 11, 1, 1)   # front
+        p.drawRoundedRect(2, 1, 11, 13, 1, 1)   # front
 
     elif key == "paste":
         # clipboard — outline only
-        p.drawRoundedRect(QRectF(3, 3, 10, 12), 1.5, 1.5)
+        p.drawRoundedRect(QRectF(4, 4, 12, 14), 1.8, 1.8)
         # clip tab
-        p.drawRoundedRect(6, 1, 4, 4, 1, 1)
+        p.drawRoundedRect(7, 1, 5, 5, 1, 1)
         app2 = QApplication.instance()
         bg2 = app2.palette().color(QPalette.ColorRole.Window) if app2 else QColor("#F3F3F3")
-        p.fillPath(_rr(7, 2, 2, 2, 0.5), QBrush(bg2))
+        p.fillPath(_rr(8, 2, 2, 2, 0.6), QBrush(bg2))
         # two content lines
-        p.drawLine(5, 8, 11, 8)
-        p.drawLine(QPointF(5, 10.5), QPointF(9, 10.5))
+        p.drawLine(6, 10, 13, 10)
+        p.drawLine(QPointF(6, 12.6), QPointF(11, 12.6))
 
     elif key == "rename":
         # simple pencil
-        p.setPen(stroke(1.4))
+        p.setPen(stroke(1.68))
         # pencil body diagonal
         pen_path = QPainterPath()
-        pen_path.moveTo(11.5, 2); pen_path.lineTo(14, 4.5)
-        pen_path.lineTo(4.5, 14); pen_path.lineTo(2, 14); pen_path.lineTo(2, 11.5)
+        pen_path.moveTo(13.8, 2); pen_path.lineTo(17, 5.4)
+        pen_path.lineTo(5.4, 17); pen_path.lineTo(2, 17); pen_path.lineTo(2, 13.8)
         pen_path.closeSubpath()
         p.drawPath(pen_path)
         # eraser line
-        p.drawLine(QPointF(9.5, 3.5), QPointF(12.5, 6.5))
+        p.drawLine(QPointF(11.4, 4.2), QPointF(15.0, 7.8))
 
     elif key == "delete":
         # clean trash outline
-        p.drawLine(2, 4, 14, 4)            # lid top
-        p.drawRoundedRect(QRectF(6, 1.5, 4, 2.5), 0.5, 0.5)  # handle
+        p.drawLine(2, 5, 17, 5)            # lid top
+        p.drawRoundedRect(QRectF(7, 1.8, 5, 3.0), 0.6, 0.6)  # handle
         body = QPainterPath()
-        body.moveTo(4, 4); body.lineTo(12, 4)
-        body.lineTo(11, 15); body.lineTo(5, 15)
+        body.moveTo(5, 5); body.lineTo(14, 5)
+        body.lineTo(13, 18); body.lineTo(6, 18)
         body.closeSubpath()
         p.drawPath(body)
-        p.drawLine(QPointF(7, 6.5), QPointF(6.5, 13))
-        p.drawLine(QPointF(9, 6.5), QPointF(9.5, 13))
+        p.drawLine(QPointF(8, 7.8), QPointF(7.8, 16))
+        p.drawLine(QPointF(11, 7.8), QPointF(11.4, 16))
 
     elif key == "sort":
         # three descending lines
-        p.setPen(stroke(1.5))
-        p.drawLine(2, 4, 14, 4)
-        p.drawLine(2, 8, 11, 8)
-        p.drawLine(2, 12, 7, 12)
+        p.setPen(stroke(1.8))
+        p.drawLine(2, 5, 17, 5)
+        p.drawLine(2, 10, 13, 10)
+        p.drawLine(2, 14, 8, 14)
 
     elif key == "details":
         # three equal lines (details/panel view)
-        p.setPen(stroke(1.5))
-        p.drawLine(2, 4, 14, 4)
-        p.drawLine(2, 8, 14, 8)
-        p.drawLine(2, 12, 14, 12)
+        p.setPen(stroke(1.8))
+        p.drawLine(2, 5, 17, 5)
+        p.drawLine(2, 10, 17, 10)
+        p.drawLine(2, 14, 17, 14)
 
     elif key == "icon_view":
         # 2×2 grid of squares (icon/grid view)
         p.setPen(Qt.PenStyle.NoPen)
         p.setBrush(QBrush(INK))
         for rx, ry in [(2, 2), (9, 2), (2, 9), (9, 9)]:
-            p.drawRoundedRect(QRectF(rx, ry, 5, 5), 1, 1)
+            p.drawRoundedRect(QRectF(rx, ry, 6, 6), 1, 1)
 
     elif key == "list_view":
         # icon + line rows (list view)
         p.setPen(Qt.PenStyle.NoPen)
         p.setBrush(QBrush(INK))
         for ry in [3, 7, 11]:
-            p.drawRoundedRect(QRectF(2, ry, 3, 2.5), 0.5, 0.5)
-        p.setPen(stroke(1.4))
+            p.drawRoundedRect(QRectF(2, ry, 4, 3.0), 0.6, 0.6)
+        p.setPen(stroke(1.68))
         for ry in [4, 8, 12]:
-            p.drawLine(QPointF(7, ry), QPointF(14, ry))
+            p.drawLine(QPointF(8, ry), QPointF(17, ry))
 
     elif key == "restore":
         # curved undo arrow
-        p.setPen(stroke(1.5))
-        p.drawArc(QRectF(2, 3, 10, 10), 30 * 16, 270 * 16)
+        p.setPen(stroke(1.8))
+        p.drawArc(QRectF(2, 4, 12, 12), 36 * 19, 324 * 19)
         p.setPen(Qt.PenStyle.NoPen)
         p.setBrush(QBrush(INK))
         arrow = QPainterPath()
-        arrow.moveTo(7, 2); arrow.lineTo(4.5, 5.5); arrow.lineTo(9.5, 5.5)
+        arrow.moveTo(8, 2); arrow.lineTo(5.4, 6.6); arrow.lineTo(11.4, 6.6)
         arrow.closeSubpath()
         p.fillPath(arrow, QBrush(INK))
 
     elif key in ("pin_add", "pin_remove"):
         import math
-        cx, cy, R, r = 8.0, 8.0, 6.5, 2.8
+        cx, cy, R, r = 11.52, 11.52, 9.36, 4.03
         pts = []
         for i in range(10):
             angle = math.radians(-90 + i * 36)
@@ -2982,7 +3024,7 @@ def _cmd_icon(key: str, ink: "QColor | None" = None) -> QIcon:
             p.drawPath(star)
         else:
             # muted outline — clearly "off"
-            p.setPen(QPen(QColor("#9E9E9E"), 1.3,
+            p.setPen(QPen(QColor("#9E9E9E"), 1.56,
                           Qt.PenStyle.SolidLine,
                           Qt.PenCapStyle.RoundCap,
                           Qt.PenJoinStyle.RoundJoin))
@@ -3014,18 +3056,18 @@ class SearchBar(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("searchBar")
-        self.setFixedHeight(28)
-        self.setFixedWidth(220)
+        self.setFixedHeight(34)
+        self.setFixedWidth(264)
 
         lay = QHBoxLayout(self)
-        lay.setContentsMargins(6, 0, 4, 0)
+        lay.setContentsMargins(7, 0, 5, 0)
         lay.setSpacing(2)
 
         # ── magnifier icon (painted QPushButton acting as a label) ────────────
         self._icon_btn = QPushButton()
         self._icon_btn.setFixedSize(18, 18)
         self._icon_btn.setIcon(self._make_search_icon())
-        self._icon_btn.setIconSize(QSize(14, 14))
+        self._icon_btn.setIconSize(QSize(17, 17))
         self._icon_btn.setCursor(Qt.CursorShape.ArrowCursor)
         self._icon_btn.clicked.connect(lambda: self._edit.setFocus())
         lay.addWidget(self._icon_btn)
@@ -3146,7 +3188,7 @@ class SidebarWidget(QWidget):
         super().__init__(parent)
         self._favorites = favorites
         self.setObjectName("sidebar")
-        self.setFixedWidth(210)
+        self.setFixedWidth(252)
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
 
         scroll = QScrollArea(self)
@@ -3156,7 +3198,7 @@ class SidebarWidget(QWidget):
 
         inner = QWidget()
         self._lay = QVBoxLayout(inner)
-        self._lay.setContentsMargins(0, 6, 0, 6)
+        self._lay.setContentsMargins(0, 7, 0, 7)
         self._lay.setSpacing(0)
 
         # ── pinned folders + Recent ───────────────────────────────────────────
@@ -3168,7 +3210,7 @@ class SidebarWidget(QWidget):
 
         # ── Quick Access section ──────────────────────────────────────────────
         self._qa_label = QLabel("QUICK ACCESS")
-        self._qa_label.setContentsMargins(12, 14, 8, 4)
+        self._qa_label.setContentsMargins(14, 17, 10, 5)
         self._qa_label.setStyleSheet("color: #5C5C5C; font-size: 11px; font-weight: 600; background: transparent;")
         self._lay.addWidget(self._qa_label)
 
@@ -3184,7 +3226,7 @@ class SidebarWidget(QWidget):
 
         # ── Devices & Drives ──────────────────────────────────────────────────
         self._dev_label = QLabel("DEVICES & DRIVES")
-        self._dev_label.setContentsMargins(12, 14, 8, 4)
+        self._dev_label.setContentsMargins(14, 17, 10, 5)
         self._dev_label.setStyleSheet(
             "color: #5C5C5C; font-size: 11px; font-weight: 600; background: transparent;")
         self._lay.addWidget(self._dev_label)
@@ -3252,8 +3294,8 @@ class SidebarWidget(QWidget):
         btn = QPushButton(label)
         btn.setFlat(True)
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
-        btn.setIcon(QIcon.fromTheme("folder", _make_folder_icon(16)))
-        btn.setIconSize(QSize(16, 16))
+        btn.setIcon(QIcon.fromTheme("folder", _make_folder_icon(24)))
+        btn.setIconSize(QSize(24, 24))
         btn.clicked.connect(lambda: self.navigate.emit(path))
         # right-click to remove
         btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -3274,7 +3316,7 @@ class SidebarWidget(QWidget):
 
     def _add_section(self, text: str):
         lbl = QLabel(text.upper())
-        lbl.setContentsMargins(12, 14, 8, 4)
+        lbl.setContentsMargins(14, 17, 10, 5)
         self._lay.addWidget(lbl)
 
     def _add_btn(self, label: str, target: str):
@@ -3282,7 +3324,7 @@ class SidebarWidget(QWidget):
         btn.setFlat(True)
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
         btn.setIcon(_sidebar_icon(label))
-        btn.setIconSize(QSize(16, 16))
+        btn.setIconSize(QSize(24, 24))
         btn.clicked.connect(lambda: self.navigate.emit(target))
         self._lay.addWidget(btn)
         self._pinned_btns.append((label, btn))
@@ -3291,8 +3333,8 @@ class SidebarWidget(QWidget):
 
     @staticmethod
     def _drive_icon(is_removable: bool) -> QIcon:
-        """Paint a simple drive/USB icon (16x16)."""
-        size = 16
+        """Paint a simple drive/USB icon (20x20)."""
+        size = 20
         px = QPixmap(size, size)
         px.fill(Qt.GlobalColor.transparent)
         p = QPainter(px)
@@ -3444,7 +3486,7 @@ class SidebarWidget(QWidget):
             btn.setFlat(True)
             btn.setCursor(Qt.CursorShape.PointingHandCursor)
             btn.setIcon(self._drive_icon(vol.isRoot() is False))
-            btn.setIconSize(QSize(16, 16))
+            btn.setIconSize(QSize(24, 24))
             btn.setToolTip(root)
             btn.clicked.connect(lambda checked=False, r=root: self.navigate.emit(r))
             btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -3505,7 +3547,7 @@ class DrivePropertiesDialog(QDialog):
     def __init__(self, root: str, vol: QStorageInfo, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Drive Properties")
-        self.setMinimumWidth(340)
+        self.setMinimumWidth(408)
         self.setModal(True)
 
         lay = QVBoxLayout(self)
@@ -3516,10 +3558,10 @@ class DrivePropertiesDialog(QDialog):
         header = QWidget()
         header.setStyleSheet("background: #F9F9F9; border-bottom: 1px solid #E5E5E5;")
         h_lay = QHBoxLayout(header)
-        h_lay.setContentsMargins(16, 14, 16, 14)
+        h_lay.setContentsMargins(19, 17, 19, 17)
 
         icon_lbl = QLabel()
-        icon_lbl.setPixmap(SidebarWidget._drive_icon(True).pixmap(QSize(32, 32)))
+        icon_lbl.setPixmap(SidebarWidget._drive_icon(True).pixmap(QSize(38, 38)))
         h_lay.addWidget(icon_lbl)
 
         name_lbl = QLabel(os.path.basename(root) or root)
@@ -3531,8 +3573,8 @@ class DrivePropertiesDialog(QDialog):
         body = QWidget()
         body.setStyleSheet("background: #F3F3F3;")
         form = QFormLayout(body)
-        form.setContentsMargins(16, 14, 16, 14)
-        form.setSpacing(8)
+        form.setContentsMargins(19, 17, 19, 17)
+        form.setSpacing(10)
         form.setLabelAlignment(Qt.AlignmentFlag.AlignRight)
 
         def row(label, value):
@@ -3567,10 +3609,10 @@ class DrivePropertiesDialog(QDialog):
         if total > 0:
             pct = used / total
             bar_bg = QFrame()
-            bar_bg.setFixedHeight(6)
+            bar_bg.setFixedHeight(7)
             bar_bg.setStyleSheet("background: palette(mid); border-radius: 3px;")
             bar_fill = QFrame(bar_bg)
-            bar_fill.setFixedHeight(6)
+            bar_fill.setFixedHeight(7)
             fill_color = "#C42B1C" if pct > 0.9 else "#0078D4"
             bar_fill.setStyleSheet(f"background: {fill_color}; border-radius: 3px;")
             # set width after show via resize; approximate here
@@ -3581,7 +3623,7 @@ class DrivePropertiesDialog(QDialog):
 
         # ── close button ──────────────────────────────────────────────────────
         btn_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Close)
-        btn_box.setContentsMargins(16, 8, 16, 12)
+        btn_box.setContentsMargins(19, 10, 19, 14)
         btn_box.rejected.connect(self.reject)
         btn_box.accepted.connect(self.accept)
         lay.addWidget(btn_box)
@@ -3661,14 +3703,14 @@ class OpenWithDialog(QDialog):
     def __init__(self, file_path: str, all_apps: list[dict], parent=None):
         super().__init__(parent)
         self.setWindowTitle("Open With")
-        self.setMinimumSize(400, 500)
+        self.setMinimumSize(480, 600)
         self._chosen     = None
         self._all_apps   = all_apps
         self._file_path  = file_path
         self._mime       = _get_mime(file_path)
 
         lay = QVBoxLayout(self)
-        lay.setSpacing(8)
+        lay.setSpacing(10)
 
         # ── file label ────────────────────────────────────────────────────────
         lbl = QLabel(f"Choose an application to open:\n<b>{os.path.basename(file_path)}</b>")
@@ -3684,7 +3726,7 @@ class OpenWithDialog(QDialog):
 
         # ── app list ──────────────────────────────────────────────────────────
         self._list = QListWidget()
-        self._list.setIconSize(QSize(24, 24))
+        self._list.setIconSize(QSize(29, 29))
         self._list.itemDoubleClicked.connect(self._accept_item)
         self._list.currentItemChanged.connect(self._on_selection_changed)
         lay.addWidget(self._list)
@@ -3844,7 +3886,7 @@ class GroupByTypeProxy(QSortFilterProxyModel):
 class PropertiesDialog(QDialog):
     def __init__(self, path: str, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Properties"); self.setMinimumWidth(380)
+        self.setWindowTitle("Properties"); self.setMinimumWidth(456)
         lay = QFormLayout(self); lay.setVerticalSpacing(8)
         stat   = os.stat(path)
         is_dir = os.path.isdir(path)
@@ -3951,7 +3993,7 @@ class ThumbnailWorker(QObject):
 
     finished = pyqtSignal(str, object)   # (path, QPixmap | None)
 
-    def __init__(self, path: str, max_size: int = 200):
+    def __init__(self, path: str, max_size: int = 240):
         super().__init__()
         self._path     = path
         self._max_size = max_size
@@ -4167,6 +4209,66 @@ class SearchWorker(QObject):
         self.finished.emit(total)
 
 
+class DeleteWorker(QObject):
+    """Moves files to Trash (or permanently deletes them) on a background thread.
+
+    Emits finished(errors) when done, where errors is a list of (path, message)
+    tuples for any files that could not be processed.
+    """
+
+    finished = pyqtSignal(list)   # list[(path, error_str)]
+
+    def __init__(self, paths: list, permanent: bool,
+                 trash_files_dir: str, trash_info_dir: str):
+        super().__init__()
+        self._paths       = paths
+        self._permanent   = permanent
+        self._trash_files = trash_files_dir
+        self._trash_info  = trash_info_dir
+        self._cancelled   = False
+
+    def cancel(self):
+        self._cancelled = True
+
+    def run(self):
+        from urllib.parse import quote
+        errors = []
+        os.makedirs(self._trash_files, exist_ok=True)
+        os.makedirs(self._trash_info,  exist_ok=True)
+
+        for p in self._paths:
+            if self._cancelled:
+                break
+            try:
+                if self._permanent:
+                    shutil.rmtree(p) if os.path.isdir(p) else os.remove(p)
+                    info = os.path.join(self._trash_info,
+                                        os.path.basename(p) + ".trashinfo")
+                    if os.path.exists(info):
+                        os.remove(info)
+                else:
+                    name = os.path.basename(p)
+                    dest      = os.path.join(self._trash_files, name)
+                    info_dest = os.path.join(self._trash_info,  name + ".trashinfo")
+                    stem, ext = os.path.splitext(name)
+                    counter = 1
+                    while os.path.exists(dest) or os.path.exists(info_dest):
+                        unique    = f"{stem} ({counter}){ext}"
+                        dest      = os.path.join(self._trash_files, unique)
+                        info_dest = os.path.join(self._trash_info,  unique + ".trashinfo")
+                        counter  += 1
+                    deletion_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+                    with open(info_dest, "w") as f:
+                        f.write("[Trash Info]\n")
+                        f.write(f"Path={quote(os.path.abspath(p), safe='/')}\n")
+                        f.write(f"DeletionDate={deletion_date}\n")
+                    shutil.move(p, dest)
+            except Exception as e:
+                errors.append((p, str(e)))
+
+        self.finished.emit(errors)
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 #  SEARCH RESULT MODEL  (streamable flat table, same columns as RecentModel)
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -4280,6 +4382,10 @@ class TabPane(QWidget):
         self._det_graveyard: list = []
         self._det_token: object = None              # current request token
 
+        self._del_thread: QThread | None = None     # background delete worker thread
+        self._del_worker: DeleteWorker | None = None
+        self._del_graveyard: list = []
+
         # Debounce timer: delays _update_details so rapid selection changes
         # (shift-click, rubber-band) only trigger one update when they settle.
         self._details_timer = QTimer(self)
@@ -4316,7 +4422,7 @@ class TabPane(QWidget):
         self.list_view.setSortingEnabled(True)
         self.list_view.sortByColumn(self._sort_col, self._sort_order)
         self.list_view.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.list_view.setIconSize(QSize(18, 18))
+        self.list_view.setIconSize(QSize(22, 22))
         self.list_view.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.list_view.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.list_view.setDragDropMode(QAbstractItemView.DragDropMode.DragOnly)
@@ -4331,9 +4437,9 @@ class TabPane(QWidget):
         self.icon_view.setViewMode(QListView.ViewMode.IconMode)
         self.icon_view.setResizeMode(QListView.ResizeMode.Adjust)
         self.icon_view.setWrapping(True)
-        self.icon_view.setGridSize(QSize(110, 110))
-        self.icon_view.setIconSize(QSize(60, 60))
-        self.icon_view.setSpacing(4)
+        self.icon_view.setGridSize(QSize(132, 132))
+        self.icon_view.setIconSize(QSize(72, 72))
+        self.icon_view.setSpacing(5)
         self.icon_view.setUniformItemSizes(True)
         self.icon_view.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.icon_view.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
@@ -4377,26 +4483,26 @@ class TabPane(QWidget):
         sep = QFrame()
         sep.setFrameShape(QFrame.Shape.VLine)
         sep.setFixedWidth(1)
-        sep.setFixedHeight(20)
+        sep.setFixedHeight(24)
         return sep
 
     def _cmd_btn(self, icon_key: str | None, label: str, tooltip: str) -> QPushButton:
         btn = QPushButton(label)
         if icon_key is not None:
             btn.setIcon(_cmd_icon(icon_key))
-        btn.setIconSize(QSize(16, 16))
+        btn.setIconSize(QSize(24, 24))
         btn.setToolTip(tooltip)
-        btn.setFixedHeight(28)
+        btn.setFixedHeight(34)
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
         return btn
 
     def _build_command_bar(self) -> QWidget:
         bar = QWidget()
         bar.setObjectName("commandBar")
-        bar.setFixedHeight(36)
+        bar.setFixedHeight(43)
 
         lay = QHBoxLayout(bar)
-        lay.setContentsMargins(6, 2, 6, 2)
+        lay.setContentsMargins(7, 2, 7, 2)
         lay.setSpacing(2)
 
         # ── New group ──
@@ -4426,12 +4532,12 @@ class TabPane(QWidget):
 
         # ── Sort menu ──
         self._btn_sort = self._cmd_btn("sort", "Sort", "Sort options")
-        self._btn_sort.setFixedWidth(90)
+        self._btn_sort.setFixedWidth(108)
         lay.addWidget(self._btn_sort)
 
         # ── View mode toggle (list ↔ icons) ──
         self._btn_view_mode = self._cmd_btn("icon_view", "", "Switch to icon view (Ctrl+Shift+V)")
-        self._btn_view_mode.setFixedWidth(32)
+        self._btn_view_mode.setFixedWidth(38)
         self._btn_view_mode.setToolTip("Switch to icon view (Ctrl+Shift+V)")
         lay.addWidget(self._btn_view_mode)
 
@@ -4498,12 +4604,12 @@ class TabPane(QWidget):
     def _build_details_panel(self) -> QWidget:
         panel = QWidget()
         panel.setObjectName("detailsPanel")
-        panel.setMinimumWidth(230)
-        panel.setMaximumWidth(300)
+        panel.setMinimumWidth(276)
+        panel.setMaximumWidth(360)
 
         lay = QVBoxLayout(panel)
-        lay.setContentsMargins(12, 16, 12, 12)
-        lay.setSpacing(6)
+        lay.setContentsMargins(14, 19, 14, 14)
+        lay.setSpacing(7)
 
         # icon / preview area
         self._det_icon = QLabel()
@@ -4578,11 +4684,11 @@ class TabPane(QWidget):
 
         # ── Icon / preview (always instant) ───────────────────────────────────
         if is_dir or ext not in _VIDEO_EXTS:
-            preview_px = None if is_dir else self._load_preview_pixmap(path, max_size=200)
+            preview_px = None if is_dir else self._load_preview_pixmap(path, max_size=240)
             self._apply_preview(preview_px, path, is_dir)
         else:
             icon = resolve_icon(path, is_dir)
-            self._det_icon.setPixmap(icon.pixmap(QSize(64, 64)))
+            self._det_icon.setPixmap(icon.pixmap(QSize(77, 77)))
             self._det_icon.setStyleSheet("background: transparent; border-radius: 6px;")
             self._start_thumb_job(path)
 
@@ -4622,7 +4728,7 @@ class TabPane(QWidget):
 
         # ── Instant fields ─────────────────────────────────────────────────────
         icon = resolve_icon(path, True)
-        self._det_icon.setPixmap(icon.pixmap(QSize(64, 64)))
+        self._det_icon.setPixmap(icon.pixmap(QSize(77, 77)))
         self._det_icon.setStyleSheet("background: transparent; border-radius: 6px;")
         self._det_name.setText(os.path.basename(path) or path)
         try:
@@ -4687,12 +4793,12 @@ class TabPane(QWidget):
             )
         else:
             icon = resolve_icon(path, is_dir)
-            self._det_icon.setPixmap(icon.pixmap(QSize(64, 64)))
+            self._det_icon.setPixmap(icon.pixmap(QSize(77, 77)))
             self._det_icon.setStyleSheet("background: transparent; border-radius: 6px;")
 
     def _start_thumb_job(self, path: str):
         """Spawn a background thread to generate a video thumbnail."""
-        worker = ThumbnailWorker(path, max_size=200)
+        worker = ThumbnailWorker(path, max_size=240)
         thread = QThread()
         worker.moveToThread(thread)
         thread.started.connect(worker.run)
@@ -4735,7 +4841,7 @@ class TabPane(QWidget):
     # ── preview thumbnail helpers ─────────────────────────────────────────────
 
     @staticmethod
-    def _load_preview_pixmap(path: str, max_size: int = 200) -> "QPixmap | None":
+    def _load_preview_pixmap(path: str, max_size: int = 240) -> "QPixmap | None":
         """Return a scaled preview QPixmap for image/video files, or None."""
         ext = os.path.splitext(path)[1].lower()
 
@@ -4774,8 +4880,8 @@ class TabPane(QWidget):
 
     def _toggle_details(self, checked: bool):
         if checked:
-            self._details_panel.setMinimumWidth(230)
-            self._details_panel.setMaximumWidth(300)
+            self._details_panel.setMinimumWidth(276)
+            self._details_panel.setMaximumWidth(360)
             sizes = self._splitter.sizes()
             total = sizes[1] + sizes[2]
             self._splitter.setSizes([sizes[0], total - 260, 260])
@@ -4931,10 +5037,18 @@ class TabPane(QWidget):
         self._cancel_det_job()
         self._cancel_search()
         self._cancel_icon_thumb()
+        # Cancel any in-flight delete and park it in the graveyard
+        if self._del_worker is not None:
+            self._del_worker.cancel()
+        if self._del_thread is not None and self._del_thread.isRunning():
+            self._del_graveyard.append((self._del_thread, self._del_worker))
+        self._del_thread = None
+        self._del_worker = None
 
         for graveyard in (self._thumb_graveyard,
                           self._det_graveyard,
-                          self._search_graveyard):
+                          self._search_graveyard,
+                          self._del_graveyard):
             for thread, _ in graveyard:
                 if thread.isRunning():
                     thread.quit()
@@ -5071,15 +5185,7 @@ class TabPane(QWidget):
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if r != QMessageBox.StandardButton.Yes:
             return
-        TRASH_INFO_DIR = os.path.expanduser('~/.local/share/Trash/info')
-        for p in paths:
-            try:
-                shutil.rmtree(p) if os.path.isdir(p) else os.remove(p)
-                info = os.path.join(TRASH_INFO_DIR, os.path.basename(p) + '.trashinfo')
-                if os.path.exists(info):
-                    os.remove(info)
-            except Exception as e:
-                QMessageBox.critical(self, 'Error', str(e))
+        self._start_delete_job(paths, permanent=True)
 
     def _show_sort_menu(self):
         menu = QMenu(self)
@@ -5611,7 +5717,7 @@ class TabPane(QWidget):
             if _pin_btn:
                 _pin_btn.setToolTip("Remove from favorites" if is_pinned else "Add to favorites")
                 _pin_btn.setIcon(_cmd_icon("pin_add" if is_pinned else "pin_remove"))
-                _pin_btn.setIconSize(QSize(16, 16))
+                _pin_btn.setIconSize(QSize(24, 24))
 
     def _toggle_group_by_type(self, checked: bool):
         self._group_by_type = checked
@@ -5759,54 +5865,44 @@ class TabPane(QWidget):
         in_trash = self.address_bar.text() == TRASH_PATH
 
         if in_trash:
-            # Already in Trash — permanent delete
             msg = (f'Permanently delete "{os.path.basename(paths[0])}"?' if len(paths) == 1
                    else f"Permanently delete {len(paths)} items?\nThis cannot be undone.")
             r = QMessageBox.question(self, "Delete Forever", msg,
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             if r == QMessageBox.StandardButton.Yes:
-                TRASH_INFO_DIR = os.path.expanduser("~/.local/share/Trash/info")
-                for p in paths:
-                    try:
-                        shutil.rmtree(p) if os.path.isdir(p) else os.remove(p)
-                        info = os.path.join(TRASH_INFO_DIR, os.path.basename(p) + ".trashinfo")
-                        if os.path.exists(info):
-                            os.remove(info)
-                    except Exception as e:
-                        QMessageBox.critical(self, "Error", str(e))
+                self._start_delete_job(paths, permanent=True)
         else:
-            # Normal delete — move to Trash following FreeDesktop spec
             msg = (f'Move "{os.path.basename(paths[0])}" to Trash?' if len(paths) == 1
                    else f"Move {len(paths)} items to Trash?")
             r = QMessageBox.question(self, "Delete", msg,
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             if r == QMessageBox.StandardButton.Yes:
-                TRASH_INFO_DIR = os.path.expanduser("~/.local/share/Trash/info")
-                os.makedirs(TRASH_PATH, exist_ok=True)
-                os.makedirs(TRASH_INFO_DIR, exist_ok=True)
-                from urllib.parse import quote
-                for p in paths:
-                    try:
-                        name = os.path.basename(p)
-                        # Find a unique name in Trash (avoid collisions)
-                        dest = os.path.join(TRASH_PATH, name)
-                        info_dest = os.path.join(TRASH_INFO_DIR, name + ".trashinfo")
-                        stem, ext = os.path.splitext(name)
-                        counter = 1
-                        while os.path.exists(dest) or os.path.exists(info_dest):
-                            unique = f"{stem} ({counter}){ext}"
-                            dest = os.path.join(TRASH_PATH, unique)
-                            info_dest = os.path.join(TRASH_INFO_DIR, unique + ".trashinfo")
-                            counter += 1
-                        # Write .trashinfo before moving
-                        deletion_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-                        with open(info_dest, "w") as f:
-                            f.write("[Trash Info]\n")
-                            f.write(f"Path={quote(os.path.abspath(p), safe='/')}\n")
-                            f.write(f"DeletionDate={deletion_date}\n")
-                        shutil.move(p, dest)
-                    except Exception as e:
-                        QMessageBox.critical(self, "Error", str(e))
+                self._start_delete_job(paths, permanent=False)
+
+    def _start_delete_job(self, paths: list, permanent: bool):
+        """Kick off a DeleteWorker on a background thread."""
+        TRASH_FILES = TRASH_PATH
+        TRASH_INFO  = os.path.expanduser("~/.local/share/Trash/info")
+        # Park any still-running delete job in the graveyard
+        if self._del_thread is not None and self._del_thread.isRunning():
+            self._del_graveyard.append((self._del_thread, self._del_worker))
+        worker = DeleteWorker(paths, permanent, TRASH_FILES, TRASH_INFO)
+        thread = QThread()
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.finished.connect(self._on_delete_done)
+        worker.finished.connect(thread.quit)
+        self._del_worker = worker
+        self._del_thread = thread
+        thread.start()
+
+    def _on_delete_done(self, errors: list):
+        """Called on the main thread when the delete worker finishes."""
+        # Prune finished graveyard entries
+        self._del_graveyard = [(t, w) for t, w in self._del_graveyard if t.isRunning()]
+        if errors:
+            msg = "\n".join(f"{os.path.basename(p)}: {e}" for p, e in errors)
+            QMessageBox.critical(self, "Delete Error", msg)
 
     def _new_folder(self, parent_dir):
         if self._in_recent or not os.path.isdir(parent_dir):
@@ -5976,7 +6072,7 @@ class _PlusTabBar(QTabBar):
 
     new_tab_requested = pyqtSignal()
     _PLUS_W = 28
-    _TAB_W  = 170
+    _TAB_W  = 204
     _CLOSE_SIZE = 16   # painted close button square
 
     def __init__(self, parent=None):
@@ -6151,7 +6247,7 @@ class _WinCtrlButton(QToolButton if True else None):
         self._kind = kind
         self.setObjectName(obj_name)
         self.setToolTip(tip)
-        self.setFixedSize(46, 36)
+        self.setFixedSize(46, 40)
         self.setAutoRaise(True)
         self.setText("")           # no text — we paint everything
 
@@ -6393,7 +6489,9 @@ class _VTScreen:
             elif c == 0x08: self._cur_col = max(0, self._cur_col - 1)  # BS
             elif c == 0x09:                               # HT – next tab stop
                 self._cur_col = min(self.cols - 1, (self._cur_col // 8 + 1) * 8)
-            elif c == 0x0d: self._cur_col = 0             # CR
+            elif c == 0x0d:                               # CR
+                self._cur_col = 0
+                self._dirty.add(self._cur_row)
             elif c in (0x0a, 0x0b, 0x0c):                 # LF/VT/FF
                 if self._cur_row == self._scroll_bot:
                     self._scroll_up(1)
@@ -6663,7 +6761,7 @@ class _TerminalView(QPlainTextEdit):
         font.setFamily("Cascadia Code")
         font.setStyleHint(QFont.StyleHint.Monospace)
         font.setFixedPitch(True)
-        font.setPointSize(10)
+        font.setPointSize(12)
         self.setFont(font)
         self.setStyleSheet(
             "QPlainTextEdit { background-color: #1E1E1E; color: #D4D4D4;"
@@ -7019,6 +7117,9 @@ class _TerminalView(QPlainTextEdit):
         text = event.text()
         if text:
             self._write_raw(text.encode("utf-8", errors="replace"))
+            return
+
+        event.ignore()
 
     def _natural_height(self, rows: int = 3) -> int:
         """Pixel height needed to display `rows` lines + padding."""
@@ -7070,12 +7171,12 @@ class _TerminalPanel(QWidget):
 
         header = QWidget()
         header.setObjectName("termHeader")
-        header.setFixedHeight(28)
+        header.setFixedHeight(34)
         header.setToolTip("Double-click to expand / restore")
         header.mouseDoubleClickEvent = lambda e: self._toggle_expand()
         hlay = QHBoxLayout(header)
-        hlay.setContentsMargins(10, 0, 6, 0)
-        hlay.setSpacing(6)
+        hlay.setContentsMargins(12, 0, 7, 0)
+        hlay.setSpacing(7)
         lbl = QLabel("TERMINAL")
         lbl.setStyleSheet("font-size:11px; font-weight:600; color:#5C5C5C; background:transparent;")
         hlay.addWidget(lbl)
@@ -7171,7 +7272,7 @@ class FileExplorer(QMainWindow):
     def __init__(self, start_path=HOME):
         super().__init__()
         self.setWindowTitle("File Explorer")
-        self.setMinimumSize(1200, 600)
+        self.setMinimumSize(1440, 720)
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         self._maximized = False
         self._drag_pos = None
@@ -7193,7 +7294,7 @@ class FileExplorer(QMainWindow):
     # ── toolbar ───────────────────────────────────────────────────────────────
     # ── nav icon painter ──────────────────────────────────────────────────────
     @staticmethod
-    def _make_nav_icon(kind: str, size: int = 20,
+    def _make_nav_icon(kind: str, size: int = 28,
                        normal_color: "QColor | None" = None,
                        disabled_color: "QColor | None" = None) -> QIcon:
         """
@@ -7269,9 +7370,9 @@ class FileExplorer(QMainWindow):
         tb_widget = QWidget()
         tb_widget.setObjectName("navBar")
         tb_layout = QHBoxLayout(tb_widget)
-        tb_layout.setContentsMargins(4, 3, 4, 3)
+        tb_layout.setContentsMargins(5, 4, 5, 4)
         tb_layout.setSpacing(2)
-        tb_widget.setFixedHeight(40)
+        tb_widget.setFixedHeight(48)
 
         # We still need a hidden QToolBar so QMainWindow doesn't complain;
         # keep it empty and invisible.
@@ -7298,17 +7399,18 @@ class FileExplorer(QMainWindow):
         self._active_address_bar: BreadcrumbBar | None = None
 
         for act in (self.back_action, self.forward_action, self.up_action):
-            _add_action_button(act)
+            _nav_b = _add_action_button(act)
+            _nav_b.setIconSize(QSize(28, 28))
 
         # ── Favourite star (icon-only, lives in nav bar) ──────────────────────
         from PyQt6.QtWidgets import QToolButton
         self._btn_pin = QToolButton()
         self._btn_pin.setIcon(_cmd_icon("pin_remove"))
-        self._btn_pin.setIconSize(QSize(16, 16))
+        self._btn_pin.setIconSize(QSize(24, 24))
         self._btn_pin.setToolTip("Add to favorites")
         self._btn_pin.setAutoRaise(True)
         self._btn_pin.setCursor(Qt.CursorShape.PointingHandCursor)
-        self._btn_pin.setFixedSize(28, 28)
+        self._btn_pin.setFixedSize(32, 32)
         self._btn_pin.clicked.connect(lambda: self._active()._toggle_favorite())
         tb_layout.addWidget(self._btn_pin)
 
@@ -7317,7 +7419,7 @@ class FileExplorer(QMainWindow):
         self._tb_addr_container.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         clay = QHBoxLayout(self._tb_addr_container)
-        clay.setContentsMargins(4, 2, 4, 2)
+        clay.setContentsMargins(5, 2, 5, 2)
         self._tb_addr_layout = clay
         tb_layout.addWidget(self._tb_addr_container)
 
@@ -7469,7 +7571,7 @@ class FileExplorer(QMainWindow):
         # ── Title bar row: drag-area | tab bar | window controls ─────────────
         title_row = QWidget()
         title_row.setObjectName("titleBar")
-        title_row.setFixedHeight(36)
+        title_row.setFixedHeight(43)
         tlay = QHBoxLayout(title_row)
         tlay.setContentsMargins(0, 0, 0, 0)
         tlay.setSpacing(0)
@@ -7528,6 +7630,10 @@ class FileExplorer(QMainWindow):
             lambda: self._active()._toggle_view_mode())
         QShortcut(QKeySequence("Ctrl+`"), self).activated.connect(
             self._toggle_terminal)
+        QShortcut(QKeySequence("Ctrl+Tab"), self).activated.connect(
+            self._next_tab)
+        QShortcut(QKeySequence("Ctrl+Shift+Tab"), self).activated.connect(
+            self._prev_tab)
 
     # ── tab management ────────────────────────────────────────────────────────
     def new_tab(self, path: str = HOME):
@@ -7604,6 +7710,22 @@ class FileExplorer(QMainWindow):
 
     def _active(self) -> "TabPane":
         return self._tabs.currentWidget()
+
+    def _next_tab(self):
+        n = self._tabs.count()
+        if n < 2:
+            return
+        idx = (self._tabs.currentIndex() + 1) % n
+        self._tabs.setCurrentIndex(idx)
+        self._visible_tab_bar.setCurrentIndex(idx)
+
+    def _prev_tab(self):
+        n = self._tabs.count()
+        if n < 2:
+            return
+        idx = (self._tabs.currentIndex() - 1) % n
+        self._tabs.setCurrentIndex(idx)
+        self._visible_tab_bar.setCurrentIndex(idx)
 
     # ── window drag & maximize ───────────────────────────────────────────────
     def _toggle_terminal(self):
