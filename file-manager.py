@@ -7833,7 +7833,10 @@ class FileExplorer(QMainWindow):
         super().__init__()
         self.setWindowTitle("File Explorer")
         self.setMinimumSize(1440, 720)
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+        if os.environ.get("FILE_MANAGER_NATIVE_TITLEBAR") == "1":
+            self.setWindowFlags(Qt.WindowType.Window)
+        else:
+            self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint)
         self._maximized = False
         self._drag_pos = None
 
@@ -8148,6 +8151,8 @@ class FileExplorer(QMainWindow):
         self._btn_close.clicked.connect(self.close)
         for b in (self._btn_min, self._btn_max, self._btn_close):
             tlay.addWidget(b)
+            if os.environ.get("FILE_MANAGER_NATIVE_TITLEBAR") == "1":
+                b.setVisible(False)
 
         title_row.mouseDoubleClickEvent = lambda e: self._toggle_maximize()
 
