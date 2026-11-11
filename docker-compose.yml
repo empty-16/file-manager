@@ -5,13 +5,18 @@ services:
       dockerfile: Dockerfile
     image: file-manager-dev:latest
     container_name: file-manager-dev
+    network_mode: host
+    ipc: host
     volumes:
       - .:/workspace
       - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      - ${XDG_RUNTIME_DIR:-/tmp}:${XDG_RUNTIME_DIR:-/tmp}
     environment:
       - DISPLAY=${DISPLAY:-:0}
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-}
+      - XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-}
+      - QT_QPA_PLATFORM=${QT_QPA_PLATFORM:-xcb}
       - QT_X11_NO_MITSHM=1
-    ipc: host
     stdin_open: true
     tty: true
     working_dir: /workspace
