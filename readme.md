@@ -308,16 +308,20 @@ An optional command-line argument sets the initial directory. The Fusion style i
 Decompression support mimics the Windows 11 File Explorer extraction workflow for multiple archive types:
 - **Supported Formats**: `.zip`, `.tar` (`.tar.gz`, `.tgz`, `.tar.bz2`, `.tbz2`, `.tar.xz`, `.txz`), `.7z` (via `py7zr` with fallback to `7z` CLI), and `.bz2`/`.bzip2` (single file and tarballs).
 - **Windows Explorer Workflow**:
-  - Selecting an archive dynamically shows the **"Extract all"** button in the command bar.
-  - Context menu provides **"Extract All…"**, **"Extract to" -> "Select Files to Extract…"**, **"Extract Here"**, and **"Extract to '<archive_name>/'"**.
+  - Double-clicking any supported archive automatically opens it in the **Archive Viewer**.
+  - Selecting an archive dynamically shows the **"View archive"** and **"Extract all"** buttons in the command bar.
+  - Context menu provides **"View Archive"**, **"Extract All…"**, **"Extract Here"**, and **"Extract to '<archive_name>/'"**.
   - Selecting multiple archives offers **"Extract Each Archive to Subfolder"** and **"Extract All Here"**.
   - Windows 11-style **Extract Dialog** with destination picker, "Browse…" button, and `[x] Show extracted files when complete` checkbox.
-  - **Selective Extraction Dialog** (`ArchiveInspectDialog`):
-    - Accessible directly via context menu ("Extract to" → "Select Files to Extract…") or via the "Inspect / Select files to extract…" button in the Extract Dialog.
-    - Hierarchical tree view displaying files, folders, uncompressed file sizes, and modification timestamps.
-    - Checkbox selection with automatic parent/child state synchronization.
-    - Live text search filter for quick member matching.
-    - "Select All" / "Deselect All" shortcuts and live summary of selected files and total size.
+  - **Archive Viewer & Drag-and-Drop Extraction** (`ArchiveViewer`):
+    - Independent modeless window displaying the full archive hierarchy, uncompressed file sizes, types, and modification timestamps.
+    - **Drag-and-Drop Extraction**: Drag any file or folder directly out of the Archive Viewer into:
+      - **Left Pane (`SidebarWidget`)**: hover over any folder (Home, Documents, Downloads, Favorites, Drives) with live accent highlight and drop to extract directly into that destination.
+      - **Right Pane (`FileView` / `IconFileView`)**: drop onto any subfolder to extract inside it, or drop onto empty space to extract into the currently opened directory.
+    - Intelligent path resolution: dragging a file extracts just that file, while dragging a folder preserves the selected folder structure.
+    - File preview: double-clicking or pressing Enter on a file inside the archive extracts it to a temporary location and opens it in the default system viewer.
+    - Live search filter for quick member matching.
+    - "Extract Selected to…" and "Extract All…" shortcuts with destination folder pickers.
   - Non-blocking `ExtractWorker` running on a background `QThread` with progress reporting, selective member extraction, and cancellation support.
   - Built-in Zip-Slip path-traversal safety protection.
 

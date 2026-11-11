@@ -24,6 +24,7 @@ _list_archive_members = fm._list_archive_members
 ExtractWorker = fm.ExtractWorker
 ExtractDialog = fm.ExtractDialog
 ExtractProgressDialog = fm.ExtractProgressDialog
+ArchiveViewer = fm.ArchiveViewer
 ArchiveInspectDialog = fm.ArchiveInspectDialog
 
 
@@ -411,53 +412,60 @@ class TestUIComponents:
         assert prog._progress_bar.value() == 5
         assert prog._progress_bar.maximum() == 10
 
-    def test_archive_inspect_dialog_init_and_selection(self, qapp, temp_dir):
+    def test_archive_viewer_init_and_selection(self, qapp, temp_dir):
         zip_path = os.path.join(temp_dir, "inspect.zip")
         with zipfile.ZipFile(zip_path, "w") as zf:
             zf.writestr("doc.txt", "Document")
             zf.writestr("src/main.py", "print('hello')")
 
-        dlg = ArchiveInspectDialog(zip_path, default_dest=os.path.join(temp_dir, "out"))
-        assert dlg.destination() == os.path.join(temp_dir, "out")
-        assert dlg.show_extracted() is True
+        viewer = ArchiveViewer(zip_path, default_dest=os.path.join(temp_dir, "out"))
+        assert viewer.destination() == os.path.join(temp_dir, "out")
+        assert viewer.show_extracted() is True
 
-        selected = dlg.selected_members()
+        # Initially no items selected
+        assert len(viewer.selected_members()) == 0
+
+        # Expand all and select all items
+        viewer._tree.expandAll()
+        viewer._tree.selectAll()
+        selected = viewer.selected_members()
         assert "doc.txt" in selected
         assert "src/main.py" in selected
 
-    def test_archive_inspect_dialog_toggle_all(self, qapp, temp_dir):
-        zip_path = os.path.join(temp_dir, "toggle.zip")
-        with zipfile.ZipFile(zip_path, "w") as zf:
-            zf.writestr("f1.txt", "one")
-            zf.writestr("f2.txt", "two")
+        # Deselect
+        viewer._tree.clearSelection()
+        assert len(viewer.selected_members()) == 0
 
-        dlg = ArchiveInspectDialog(zip_path)
-        assert len(dlg.selected_members()) > 0
-
-        dlg._set_all_checks(False)
-        assert len(dlg.selected_members()) == 0
-        assert not dlg._btn_extract.isEnabled()
-
-        dlg._set_all_checks(True)
-        assert len(dlg.selected_members()) >= 2
-        assert dlg._btn_extract.isEnabled()
-
-    def test_archive_inspect_dialog_filtering(self, qapp, temp_dir):
+    def test_archive_viewer_filtering(self, qapp, temp_dir):
         zip_path = os.path.join(temp_dir, "filter.zip")
         with zipfile.ZipFile(zip_path, "w") as zf:
             zf.writestr("doc.txt", "text")
             zf.writestr("image.png", "img")
 
-        dlg = ArchiveInspectDialog(zip_path)
+        viewer = ArchiveViewer(zip_path)
         # Apply filter for png
-        dlg._apply_filter("png")
-        assert dlg._item_map["image.png"].isHidden() is False
-        assert dlg._item_map["doc.txt"].isHidden() is True
+        viewer._apply_filter("png")
+        assert viewer._item_map["image.png"].isHidden() is False
+        assert viewer._item_map["doc.txt"].isHidden() is True
 
         # Clear filter
-        dlg._apply_filter("")
-        assert dlg._item_map["image.png"].isHidden() is False
-        assert dlg._item_map["doc.txt"].isHidden() is False
+        viewer._apply_filter("")
+        assert viewer._item_map["image.png"].isHidden() is False
+        assert viewer._item_map["doc.txt"].isHidden() is False
+
+    def test_extract_worker_strip_prefixes(self, temp_dir):
+        zip_path = os.path.join(temp_dir, "nested.zip")
+        dest_dir = os.path.join(temp_dir, "out_stripped")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("sub/folder/file.txt", "nested content")
+
+        # Extract with strip_prefixes=True
+        worker = ExtractWorker([zip_path], dest_dir, selected_members=["sub/folder/file.txt"],
+                               strip_prefixes=True)
+        worker.run()
+        # Should be placed directly as file.txt in dest_dir!
+        assert os.path.exists(os.path.join(dest_dir, "file.txt"))
+        assert open(os.path.join(dest_dir, "file.txt")).read() == "nested content"
 
     def test_extract_dialog_inspect_flow(self, qapp, temp_dir):
         zip_path = os.path.join(temp_dir, "flow.zip")
@@ -467,3 +475,37 @@ class TestUIComponents:
         dlg = ExtractDialog(zip_path)
         assert dlg.selected_members() is None
         assert dlg._btn_inspect is not None
+
+    def test_drag_and_drop_archive_extraction(self, qapp, temp_dir):
+        import json
+        from PyQt6.QtCore import QMimeData
+
+        # Create sample archive
+        zip_path = os.path.join(temp_dir, "drop.zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("dropped.txt", "drag and drop extraction works!")
+            zf.writestr("sub/other.txt", "other file")
+
+        # Destination folder
+        drop_dest = os.path.join(temp_dir, "drop_target")
+        os.makedirs(drop_dest, exist_ok=True)
+
+        # Create MIME payload matching ArchiveViewer's drag
+        mime = QMimeData()
+        payload = {
+            "archive_path": zip_path,
+            "members": ["dropped.txt"],
+        }
+        mime.setData("application/x-archive-extract", json.dumps(payload).encode("utf-8"))
+
+        # Create a TabPane and test _handle_items_dropped
+        recent = fm.RecentFiles()
+        favorites = fm.Favorites()
+        tab = fm.TabPane(recent, [], favorites)
+        tab._handle_items_dropped(drop_dest, mime)
+
+        # Verify extracted file in destination
+        extracted_file = os.path.join(drop_dest, "dropped.txt")
+        assert os.path.exists(extracted_file)
+        assert open(extracted_file).read() == "drag and drop extraction works!"
+        assert not os.path.exists(os.path.join(drop_dest, "sub", "other.txt"))

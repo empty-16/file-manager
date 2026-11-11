@@ -639,14 +639,18 @@ QVBoxLayout
 
 **Rename**: `_cmd_rename()` calls `list_view.edit(sel[0])` to start `IconDelegate`'s inline rename editor.
 
-**Decompress / Extract** (`_cmd_extract`, `_extract_archive`, `_inspect_and_extract`, `ExtractWorker`, `ExtractDialog`, `ExtractProgressDialog`, `ArchiveInspectDialog`):
+**Decompress / Extract** (`_cmd_extract`, `_cmd_view_archive`, `_extract_archive`, `_view_archive`, `ExtractWorker`, `ExtractDialog`, `ExtractProgressDialog`, `ArchiveViewer`):
 Windows Explorer-style decompression supporting `.zip`, `.tar` (including `.tar.gz`, `.tgz`, `.tar.bz2`, `.tbz2`, `.tar.xz`, `.txz`), `.7z` (via `py7zr` with `7z` CLI fallback), and `.bz2`/`.bzip2` (tarballs and standalone compressed files).
-- Context menu options: "Extract All…", "Extract to" submenu ("Select Files to Extract…", "Extract Here", "Extract to '<archive_name>/'").
-- Selective Extraction Dialog (`ArchiveInspectDialog`): provides an interactive tree of archive contents with individual checkboxes, live search filter, uncompressed file size display, and "Select All" / "Deselect All" helpers. Can be launched directly from context menu or from the Extract Dialog's "Inspect / Select files to extract…" button.
+- Context menu options: "View Archive", "Extract All…", "Extract to" submenu ("Extract Here", "Extract to '<archive_name>/'").
+- Archive Viewer (`ArchiveViewer`): an interactive modeless window displaying the archive tree with icons, uncompressed file sizes, types, and modification timestamps. Supports file preview on double-click, search filtering, and "Extract Selected to…".
+- **Drag-and-Drop Extraction**: users can select one or more files or folders in the Archive Viewer and drag them directly into:
+  - The left pane (`SidebarWidget`): highlights target folder on hover (Home, Documents, Downloads, Favorites, Drives) and extracts dropped items directly into that folder.
+  - The right pane (`FileView` / `IconFileView`): extracts directly into the target subfolder, or into the currently viewed directory when dropped on empty space.
+  - Strips parent folder prefixes automatically when dragging single files or nested items.
 - Multiple selection options: "Extract Each Archive to Subfolder" and "Extract All Here".
-- Command bar button: "Extract all" button dynamically visible when archive(s) are selected.
+- Command bar buttons: "View archive" and "Extract all" buttons dynamically visible when archive(s) are selected.
 - Windows Explorer-style extraction dialog prompting for target destination and "[x] Show extracted files when complete" checkbox.
-- Non-blocking background worker (`ExtractWorker` on `QThread`) with live progress dialog, selective extraction support (`selected_members`), and cancellation.
+- Non-blocking background worker (`ExtractWorker` on `QThread`) with live progress dialog, selective extraction support (`selected_members`, `strip_prefixes`), and cancellation.
 - Built-in Zip-Slip and path-traversal safety validation.
 
 **Compress** (`_compress`): searches PATH for `file-roller`, `ark`, `xarchiver`, `peazip`, `engrampa` in order. Builds the appropriate command line for the found manager and launches via `subprocess.Popen`. Shows a warning if none is found.
@@ -656,7 +660,7 @@ Windows Explorer-style decompression supporting `.zip`, `.tar` (including `.tar.
 ### 13.9 Context Menu
 
 **On a file/folder item:**
-Single item: Open, Open in new tab (dirs), Open in Terminal (dirs), Open with submenu (files — lists MIME-matched apps, each as a direct action, plus "Other application…"), Extract All… (archives), Extract to submenu (archives — "Select Files to Extract…", "Extract Here", "Extract to '<name>/'"), Compress, Cut, Copy, Paste (dir targets only), Rename (single), Delete, Properties (single).
+Single item: Open, Open in new tab (dirs), Open in Terminal (dirs), Open with submenu (files — lists MIME-matched apps, each as a direct action, plus "Other application…"), View Archive (archives), Extract All… (archives), Extract to submenu (archives — "Extract Here", "Extract to '<name>/'"), Compress, Cut, Copy, Paste (dir targets only), Rename (single), Delete, Properties (single).
 Multiple items: count label, Extract Each Archive to Subfolder / Extract All Here (if all archives), Compress, Cut, Copy, Delete.
 
 **On empty space:**
