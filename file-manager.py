@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import shutil
+import tempfile
 import mimetypes
 import subprocess
 import configparser
@@ -21,7 +22,7 @@ except ImportError:
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QTreeView, QVBoxLayout,
     QWidget, QToolBar, QLineEdit, QSplitter, QMenu,
-    QMessageBox, QDialog, QFormLayout,
+    QMessageBox, QDialog, QFormLayout, QFileDialog,
     QLabel, QDialogButtonBox, QListWidget, QListWidgetItem,
     QHBoxLayout, QPushButton, QScrollArea, QSizePolicy,
     QFrame, QAbstractItemView, QStyledItemDelegate, QFileIconProvider,
@@ -29,7 +30,7 @@ from PyQt6.QtWidgets import (
     QProgressBar, QCheckBox, QTreeWidget, QTreeWidgetItem, QHeaderView,
 )
 from PyQt6.QtCore import (
-    Qt, QDir, QPoint, QSortFilterProxyModel, QModelIndex,
+    Qt, QDir, QPoint, QPointF, QRect, QRectF, QSortFilterProxyModel, QModelIndex,
     QAbstractTableModel, QVariant, QSize, pyqtSignal,
     QThread, QObject, QTimer, QStorageInfo, QUrl, QMimeData, QEvent,
 )

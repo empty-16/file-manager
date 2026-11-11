@@ -509,3 +509,16 @@ class TestUIComponents:
         assert os.path.exists(extracted_file)
         assert open(extracted_file).read() == "drag and drop extraction works!"
         assert not os.path.exists(os.path.join(drop_dest, "sub", "other.txt"))
+
+    def test_archive_viewer_start_drag_construction(self, qapp, temp_dir):
+        from unittest.mock import patch
+        zip_path = os.path.join(temp_dir, "drag_test.zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("test.txt", "drag test data")
+
+        viewer = ArchiveViewer(zip_path)
+        viewer._tree.selectAll()
+        assert len(viewer.selected_members()) == 1
+
+        with patch.object(fm.QDrag, "exec", return_value=None):
+            viewer._tree._start_drag()
