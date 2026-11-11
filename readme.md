@@ -300,3 +300,35 @@ def main():
 ```
 
 An optional command-line argument sets the initial directory. The Fusion style is used as the base so QSS overrides render consistently across platforms.
+
+---
+
+## Decompression Support (Windows Explorer Style)
+
+Decompression support mimics the Windows 11 File Explorer extraction workflow for multiple archive types:
+- **Supported Formats**: `.zip`, `.tar` (`.tar.gz`, `.tgz`, `.tar.bz2`, `.tbz2`, `.tar.xz`, `.txz`), `.7z` (via `py7zr` with fallback to `7z` CLI), and `.bz2`/`.bzip2` (single file and tarballs).
+- **Windows Explorer Workflow**:
+  - Selecting an archive dynamically shows the **"Extract all"** button in the command bar.
+  - Context menu provides **"Extract All…"**, **"Extract Here"**, and **"Extract to '<archive_name>/'"**.
+  - Selecting multiple archives offers **"Extract Each Archive to Subfolder"** and **"Extract All Here"**.
+  - Windows 11-style **Extract Dialog** with destination picker, "Browse…" button, and `[x] Show extracted files when complete` checkbox.
+  - Non-blocking `ExtractWorker` running on a background `QThread` with progress reporting and cancellation support.
+  - Built-in Zip-Slip path-traversal safety protection.
+
+---
+
+## Development Environment (Docker)
+
+A containerized dev environment is provided with all Qt6 GUI runtimes, archive utilities, and testing tools pre-installed:
+
+```bash
+# Build the dev image
+docker compose build
+
+# Run tests headlessly
+docker compose run --rm -e QT_QPA_PLATFORM=offscreen dev pytest tests/
+
+# Launch an interactive dev shell
+docker compose run --rm dev
+```
+

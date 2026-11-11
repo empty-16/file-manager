@@ -6,7 +6,17 @@ import mimetypes
 import subprocess
 import configparser
 import json
+import zipfile
+import tarfile
+import bz2
+import gzip
+import lzma
 from datetime import datetime
+
+try:
+    import py7zr
+except ImportError:
+    py7zr = None
 
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QTreeView, QVBoxLayout,
@@ -16,6 +26,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout, QPushButton, QScrollArea, QSizePolicy,
     QFrame, QAbstractItemView, QStyledItemDelegate, QFileIconProvider,
     QStackedWidget, QTabWidget, QTabBar, QToolButton, QPlainTextEdit, QListView,
+    QProgressBar, QCheckBox,
 )
 from PyQt6.QtCore import (
     Qt, QDir, QPoint, QSortFilterProxyModel, QModelIndex,
@@ -611,6 +622,26 @@ QWidget#detailsPanel QLabel {
     color: #1A1A1A;
 }
 
+/* ── Progress bar ────────────────────────────────────────────────────────── */
+QProgressBar {
+    background-color: #E5E5E5;
+    border: none;
+    border-radius: 4px;
+    height: 8px;
+    text-align: center;
+}
+QProgressBar::chunk {
+    background-color: #0078D4;
+    border-radius: 4px;
+}
+
+/* ── Check box ───────────────────────────────────────────────────────────── */
+QCheckBox {
+    spacing: 8px;
+    color: #1A1A1A;
+    font-size: 12px;
+}
+
 /* ── Tooltip ─────────────────────────────────────────────────────────────── */
 QToolTip {
     background-color: #EDECEA;
@@ -1179,6 +1210,26 @@ QToolTip {
     font-size: 14px;
 }
 
+/* ── Progress bar ────────────────────────────────────────────────────────── */
+QProgressBar {
+    background-color: #333333;
+    border: none;
+    border-radius: 4px;
+    height: 8px;
+    text-align: center;
+}
+QProgressBar::chunk {
+    background-color: #4CC2FF;
+    border-radius: 4px;
+}
+
+/* ── Check box ───────────────────────────────────────────────────────────── */
+QCheckBox {
+    spacing: 8px;
+    color: #FFFFFF;
+    font-size: 12px;
+}
+
 """
 
 
@@ -1648,6 +1699,38 @@ _ARCHIVE_EXTS = {
     ".zip", ".tar", ".gz", ".bz2", ".xz",
     ".rar", ".7z", ".tgz", ".tbz2",
 }
+
+_DECOMPRESS_EXTS = {
+    ".zip", ".tar", ".gz", ".bz2", ".bzip2", ".xz",
+    ".7z", ".tgz", ".tbz2", ".txz",
+}
+
+
+def _get_archive_basename(path: str) -> str:
+    """Return archive name without compound extension (.tar.gz, .tar.bz2, etc.)."""
+    name = os.path.basename(path)
+    lower = name.lower()
+    for ext in (".tar.gz", ".tar.bz2", ".tar.xz", ".tar.zst", ".tbz2", ".tgz", ".txz"):
+        if lower.endswith(ext):
+            return name[:-len(ext)]
+    root, _ = os.path.splitext(name)
+    return root
+
+
+def _is_safe_extraction_path(base_dir: str, target_path: str) -> bool:
+    """Prevent path traversal (Zip Slip / Tar Slip vulnerabilities)."""
+    abs_base = os.path.abspath(base_dir)
+    abs_target = os.path.abspath(target_path)
+    return os.path.commonpath([abs_base]) == os.path.commonpath([abs_base, abs_target])
+
+
+def _is_decompressible_archive(path: str) -> bool:
+    """Return True if path is a file with a supported archive extension."""
+    if not path or not os.path.isfile(path):
+        return False
+    lower = path.lower()
+    return any(lower.endswith(ext) for ext in _DECOMPRESS_EXTS)
+
 
 
 
@@ -3005,6 +3088,18 @@ def _cmd_icon(key: str, ink: "QColor | None" = None) -> QIcon:
         arrow.closeSubpath()
         p.fillPath(arrow, QBrush(INK))
 
+    elif key == "extract":
+        # Folder with upward extraction arrow (Windows 11 Explorer style)
+        p.drawRoundedRect(QRectF(1.8, 6, 17, 12), 1.8, 1.8)
+        tab = QPainterPath()
+        tab.addRoundedRect(1.8, 4, 6, 4, 1, 1)
+        p.drawPath(tab)
+        p.setPen(stroke(1.8))
+        p.drawLine(QPointF(10.3, 15), QPointF(10.3, 8.5))
+        p.drawLine(QPointF(7.5, 11), QPointF(10.3, 8.5))
+        p.drawLine(QPointF(13.1, 11), QPointF(10.3, 8.5))
+
+
     elif key in ("pin_add", "pin_remove"):
         import math
         cx, cy, R, r = 11.52, 11.52, 9.36, 4.03
@@ -4270,6 +4365,335 @@ class DeleteWorker(QObject):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+#  EXTRACTION WORKER & DIALOGS  (Windows Explorer-style archive decompression)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ExtractWorker(QObject):
+    """Decompresses archives (.zip, .tar, .7z, .bz2, etc.) on a background thread.
+
+    Emits:
+        progress(current_idx, total_count, current_filename)
+        finished(success, dest_dir, errors)
+    """
+
+    progress = pyqtSignal(int, int, str)
+    finished = pyqtSignal(bool, str, list)
+
+    def __init__(self, archives: list[str], dest_dir: str, create_subfolders: bool = False):
+        super().__init__()
+        self._archives = archives
+        self._dest_dir = dest_dir
+        self._create_subfolders = create_subfolders
+        self._cancelled = False
+
+    def cancel(self):
+        self._cancelled = True
+
+    def run(self):
+        errors = []
+        dest_abs = os.path.abspath(self._dest_dir)
+        os.makedirs(dest_abs, exist_ok=True)
+
+        for arc_path in self._archives:
+            if self._cancelled:
+                break
+            try:
+                if self._create_subfolders:
+                    target_dir = os.path.join(dest_abs, _get_archive_basename(arc_path))
+                else:
+                    target_dir = dest_abs
+                os.makedirs(target_dir, exist_ok=True)
+                self._extract_single(arc_path, target_dir)
+            except Exception as e:
+                errors.append((arc_path, str(e)))
+
+        success = (len(errors) == 0 and not self._cancelled)
+        self.finished.emit(success, dest_abs, errors)
+
+    def _extract_single(self, arc_path: str, target_dir: str):
+        lower = arc_path.lower()
+
+        # Check for 7z first
+        if lower.endswith(".7z"):
+            self._extract_7z(arc_path, target_dir)
+            return
+
+        # Check for zip
+        if lower.endswith(".zip") or zipfile.is_zipfile(arc_path):
+            self._extract_zip(arc_path, target_dir)
+            return
+
+        # Check for tar (including tarballs with .tar.gz, .tgz, .tar.bz2, .tbz2, .tar.xz, .txz)
+        if any(lower.endswith(ext) for ext in (".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz")) or tarfile.is_tarfile(arc_path):
+            self._extract_tar(arc_path, target_dir)
+            return
+
+        # Check for standalone bz2 (single compressed file)
+        if lower.endswith(".bz2") or lower.endswith(".bzip2"):
+            self._extract_bz2_single(arc_path, target_dir)
+            return
+
+        # Check for standalone gz (single compressed file)
+        if lower.endswith(".gz"):
+            self._extract_gz_single(arc_path, target_dir)
+            return
+
+        # Check for standalone xz (single compressed file)
+        if lower.endswith(".xz"):
+            self._extract_xz_single(arc_path, target_dir)
+            return
+
+        raise ValueError(f"Unsupported archive format: {os.path.basename(arc_path)}")
+
+    def _extract_zip(self, arc_path: str, target_dir: str):
+        with zipfile.ZipFile(arc_path, 'r') as zf:
+            infolist = zf.infolist()
+            total = len(infolist)
+            target_abs = os.path.abspath(target_dir)
+            for i, member in enumerate(infolist):
+                if self._cancelled:
+                    break
+                out_path = os.path.abspath(os.path.join(target_abs, member.filename))
+                if not _is_safe_extraction_path(target_abs, out_path):
+                    raise ValueError(f"Unsafe path in archive: {member.filename}")
+                zf.extract(member, target_abs)
+                self.progress.emit(i + 1, total, member.filename)
+
+    def _extract_tar(self, arc_path: str, target_dir: str):
+        with tarfile.open(arc_path, 'r:*') as tf:
+            members = tf.getmembers()
+            total = len(members)
+            target_abs = os.path.abspath(target_dir)
+            for i, member in enumerate(members):
+                if self._cancelled:
+                    break
+                out_path = os.path.abspath(os.path.join(target_abs, member.name))
+                if not _is_safe_extraction_path(target_abs, out_path):
+                    raise ValueError(f"Unsafe path in archive: {member.name}")
+                try:
+                    if hasattr(tarfile, 'data_filter'):
+                        tf.extract(member, path=target_abs, filter='data')
+                    else:
+                        tf.extract(member, path=target_abs)
+                except Exception:
+                    tf.extract(member, path=target_abs)
+                self.progress.emit(i + 1, total, member.name)
+
+    def _extract_7z(self, arc_path: str, target_dir: str):
+        target_abs = os.path.abspath(target_dir)
+        try:
+            import py7zr
+        except ImportError:
+            py7zr = None
+
+        if py7zr is not None:
+            with py7zr.SevenZipFile(arc_path, mode='r') as zf:
+                names = zf.getnames()
+                total = len(names)
+                for name in names:
+                    out_path = os.path.abspath(os.path.join(target_abs, name))
+                    if not _is_safe_extraction_path(target_abs, out_path):
+                        raise ValueError(f"Unsafe path in 7z archive: {name}")
+                zf.extractall(path=target_abs)
+                self.progress.emit(total, total, os.path.basename(arc_path))
+        else:
+            binary = shutil.which("7z") or shutil.which("7za") or shutil.which("p7zip")
+            if not binary:
+                raise RuntimeError("No 7-Zip extractor available. Please install py7zr or p7zip-full.")
+            res = subprocess.run([binary, "x", "-y", f"-o{target_abs}", arc_path],
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+            if res.returncode != 0:
+                raise RuntimeError(res.stderr or f"7z extraction failed with code {res.returncode}")
+            self.progress.emit(1, 1, os.path.basename(arc_path))
+
+    def _extract_bz2_single(self, arc_path: str, target_dir: str):
+        target_abs = os.path.abspath(target_dir)
+        name = os.path.basename(arc_path)
+        lower = name.lower()
+        if lower.endswith(".bzip2"):
+            out_name = name[:-6]
+        elif lower.endswith(".bz2"):
+            out_name = name[:-4]
+        else:
+            out_name = name + ".out"
+        out_path = os.path.join(target_abs, out_name)
+        if not _is_safe_extraction_path(target_abs, out_path):
+            raise ValueError(f"Unsafe path for bz2 output: {out_name}")
+        with bz2.open(arc_path, 'rb') as f_in, open(out_path, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+        self.progress.emit(1, 1, out_name)
+
+    def _extract_gz_single(self, arc_path: str, target_dir: str):
+        target_abs = os.path.abspath(target_dir)
+        name = os.path.basename(arc_path)
+        out_name = name[:-3] if name.lower().endswith(".gz") else name + ".out"
+        out_path = os.path.join(target_abs, out_name)
+        if not _is_safe_extraction_path(target_abs, out_path):
+            raise ValueError(f"Unsafe path for gz output: {out_name}")
+        with gzip.open(arc_path, 'rb') as f_in, open(out_path, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+        self.progress.emit(1, 1, out_name)
+
+    def _extract_xz_single(self, arc_path: str, target_dir: str):
+        target_abs = os.path.abspath(target_dir)
+        name = os.path.basename(arc_path)
+        out_name = name[:-3] if name.lower().endswith(".xz") else name + ".out"
+        out_path = os.path.join(target_abs, out_name)
+        if not _is_safe_extraction_path(target_abs, out_path):
+            raise ValueError(f"Unsafe path for xz output: {out_name}")
+        with lzma.open(arc_path, 'rb') as f_in, open(out_path, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+        self.progress.emit(1, 1, out_name)
+
+
+class ExtractDialog(QDialog):
+    """Windows Explorer-style 'Extract Compressed (Zipped) Folders' dialog."""
+
+    def __init__(self, archive_path: str, default_dest: str | None = None, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Extract Compressed (Zipped) Folders")
+        self.setMinimumWidth(500)
+        self.setModal(True)
+
+        if not default_dest:
+            parent_dir = os.path.dirname(os.path.abspath(archive_path))
+            base_name = _get_archive_basename(archive_path)
+            default_dest = os.path.join(parent_dir, base_name)
+
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(20, 20, 20, 20)
+        lay.setSpacing(14)
+
+        prompt_title = QLabel("Select a Destination and Extract Files")
+        prompt_title.setStyleSheet("font-size: 14px; font-weight: 600; color: palette(windowText);")
+        lay.addWidget(prompt_title)
+
+        prompt_sub = QLabel("Files will be extracted to this folder:")
+        prompt_sub.setStyleSheet("font-size: 12px; color: palette(windowText);")
+        lay.addWidget(prompt_sub)
+
+        path_box = QHBoxLayout()
+        path_box.setSpacing(8)
+
+        self._path_edit = QLineEdit(default_dest)
+        self._path_edit.setStyleSheet("padding: 6px 10px; font-size: 12px;")
+        path_box.addWidget(self._path_edit, 1)
+
+        self._btn_browse = QPushButton("Browse…")
+        self._btn_browse.setStyleSheet("padding: 6px 14px; font-size: 12px;")
+        self._btn_browse.clicked.connect(self._on_browse)
+        path_box.addWidget(self._btn_browse)
+
+        lay.addLayout(path_box)
+
+        self._cb_show = QCheckBox("Show extracted files when complete")
+        self._cb_show.setChecked(True)
+        self._cb_show.setStyleSheet("font-size: 12px;")
+        lay.addWidget(self._cb_show)
+
+        lay.addSpacing(10)
+
+        btn_box = QHBoxLayout()
+        btn_box.addStretch()
+
+        self._btn_extract = QPushButton("Extract")
+        self._btn_extract.setDefault(True)
+        self._btn_extract.setStyleSheet(
+            "QPushButton { background-color: #0078D4; color: #FFFFFF; font-weight: 600; padding: 6px 18px; border-radius: 4px; }"
+            "QPushButton:hover { background-color: #106EBE; }"
+            "QPushButton:pressed { background-color: #005A9E; }"
+        )
+        self._btn_extract.clicked.connect(self.accept)
+        btn_box.addWidget(self._btn_extract)
+
+        self._btn_cancel = QPushButton("Cancel")
+        self._btn_cancel.setStyleSheet("padding: 6px 16px; border-radius: 4px;")
+        self._btn_cancel.clicked.connect(self.reject)
+        btn_box.addWidget(self._btn_cancel)
+
+        lay.addLayout(btn_box)
+
+    def _on_browse(self):
+        curr = self._path_edit.text()
+        chosen = QFileDialog.getExistingDirectory(self, "Select Destination Folder", curr or os.path.expanduser("~"))
+        if chosen:
+            self._path_edit.setText(chosen)
+
+    def destination(self) -> str:
+        return self._path_edit.text().strip()
+
+    def show_extracted(self) -> bool:
+        return self._cb_show.isChecked()
+
+
+class ExtractProgressDialog(QDialog):
+    """Windows Explorer-style extraction progress dialog."""
+
+    cancelled = pyqtSignal()
+
+    def __init__(self, archive_name: str, dest_dir: str, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"Extracting from {archive_name}")
+        self.setMinimumWidth(440)
+        self.setModal(True)
+
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(20, 20, 20, 20)
+        lay.setSpacing(10)
+
+        self._title_lbl = QLabel(f"Extracting from {archive_name}")
+        self._title_lbl.setStyleSheet("font-size: 13px; font-weight: 600; color: palette(windowText);")
+        lay.addWidget(self._title_lbl)
+
+        self._dest_lbl = QLabel(f"Destination: {dest_dir}")
+        self._dest_lbl.setStyleSheet("font-size: 11px; color: #5C5C5C;")
+        lay.addWidget(self._dest_lbl)
+
+        self._status_lbl = QLabel("Preparing to extract…")
+        self._status_lbl.setStyleSheet("font-size: 12px; color: palette(windowText);")
+        self._status_lbl.setWordWrap(True)
+        lay.addWidget(self._status_lbl)
+
+        self._progress_bar = QProgressBar()
+        self._progress_bar.setRange(0, 100)
+        self._progress_bar.setValue(0)
+        self._progress_bar.setTextVisible(False)
+        self._progress_bar.setFixedHeight(8)
+        self._progress_bar.setStyleSheet(
+            "QProgressBar { background-color: #E5E5E5; border: none; border-radius: 4px; }"
+            "QProgressBar::chunk { background-color: #0078D4; border-radius: 4px; }"
+        )
+        lay.addWidget(self._progress_bar)
+
+        lay.addSpacing(6)
+
+        btn_box = QHBoxLayout()
+        btn_box.addStretch()
+        self._btn_cancel = QPushButton("Cancel")
+        self._btn_cancel.setStyleSheet("padding: 5px 16px; border-radius: 4px;")
+        self._btn_cancel.clicked.connect(self._on_cancel)
+        btn_box.addWidget(self._btn_cancel)
+
+        lay.addLayout(btn_box)
+
+    def _on_cancel(self):
+        self._status_lbl.setText("Cancelling extraction…")
+        self._btn_cancel.setEnabled(False)
+        self.cancelled.emit()
+
+    def update_progress(self, current: int, total: int, filename: str):
+        if total > 0:
+            self._progress_bar.setRange(0, total)
+            self._progress_bar.setValue(current)
+            percent = int((current / total) * 100)
+            self._status_lbl.setText(f"Extracting {current} of {total} ({percent}%): {filename}")
+        else:
+            self._progress_bar.setRange(0, 0)
+            self._status_lbl.setText(f"Extracting: {filename}")
+
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 #  SEARCH RESULT MODEL  (streamable flat table, same columns as RecentModel)
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -4385,6 +4809,8 @@ class TabPane(QWidget):
         self._del_thread: QThread | None = None     # background delete worker thread
         self._del_worker: DeleteWorker | None = None
         self._del_graveyard: list = []
+        self._extract_graveyard: list = []
+        self._extract_jobs: list = []
 
         # Debounce timer: delays _update_details so rapid selection changes
         # (shift-click, rubber-band) only trigger one update when they settle.
@@ -4530,6 +4956,14 @@ class TabPane(QWidget):
 
         lay.addWidget(self._cmd_sep())
 
+        # ── Extract group (Windows Explorer style: shown when archives selected) ──
+        self._btn_extract = self._cmd_btn("extract", "Extract all", "Extract all files from archive")
+        self._btn_extract.setVisible(False)
+        self._sep_extract = self._cmd_sep()
+        self._sep_extract.setVisible(False)
+        lay.addWidget(self._btn_extract)
+        lay.addWidget(self._sep_extract)
+
         # ── Sort menu ──
         self._btn_sort = self._cmd_btn("sort", "Sort", "Sort options")
         self._btn_sort.setFixedWidth(108)
@@ -4580,6 +5014,12 @@ class TabPane(QWidget):
         self._btn_rename.setEnabled(single_file)
         self._btn_delete.setEnabled(has_sel)
 
+        path = self.address_bar.text()
+        in_trash = path == TRASH_PATH
+        is_archive_sel = has_sel and all(_is_decompressible_archive(p) for p in sel)
+        self._btn_extract.setVisible(is_archive_sel and not in_trash)
+        self._sep_extract.setVisible(is_archive_sel and not in_trash)
+
     def _refresh_cmd_icons(self):
         """Re-render all command bar icons to match the current palette."""
         keys = [
@@ -4590,6 +5030,7 @@ class TabPane(QWidget):
             (self._btn_paste,      "paste"),
             (self._btn_rename,     "rename"),
             (self._btn_delete,     "delete"),
+            (self._btn_extract,    "extract"),
             (self._btn_sort,       "sort"),
             (self._btn_view_mode,  "icon_view"),
             (self._btn_details,    "details"),
@@ -5045,10 +5486,18 @@ class TabPane(QWidget):
         self._del_thread = None
         self._del_worker = None
 
+        # Cancel any in-flight extract jobs
+        for t, w in self._extract_jobs:
+            w.cancel()
+            if t.isRunning():
+                self._extract_graveyard.append((t, w))
+        self._extract_jobs.clear()
+
         for graveyard in (self._thumb_graveyard,
                           self._det_graveyard,
                           self._search_graveyard,
-                          self._del_graveyard):
+                          self._del_graveyard,
+                          self._extract_graveyard):
             for thread, _ in graveyard:
                 if thread.isRunning():
                     thread.quit()
@@ -5117,6 +5566,7 @@ class TabPane(QWidget):
             lambda: self._paste(self.address_bar.text()))
         self._btn_rename.clicked.connect(self._cmd_rename)
         self._btn_delete.clicked.connect(self._cmd_delete)
+        self._btn_extract.clicked.connect(self._cmd_extract)
         self._btn_sort.clicked.connect(self._show_sort_menu)
         self._btn_view_mode.clicked.connect(self._toggle_view_mode)
         self._btn_empty_trash.clicked.connect(self._empty_trash)
@@ -5525,6 +5975,28 @@ class TabPane(QWidget):
                     ow_menu.addAction("Other application…").triggered.connect(
                         lambda: self._open_with_other(path))
 
+                if not is_dir and _is_decompressible_archive(path):
+                    menu.addAction("Extract All…").triggered.connect(
+                        lambda checked=False, p=path: self._extract_archive([p], prompt=True))
+                    ext_sub = menu.addMenu("Extract to")
+                    ext_sub.addAction("Extract Here").triggered.connect(
+                        lambda checked=False, p=path: self._extract_archive(
+                            [p], prompt=False, custom_dest=os.path.dirname(p), create_subfolder=False))
+                    base_sub = _get_archive_basename(path)
+                    ext_sub.addAction(f"Extract to '{base_sub}/'").triggered.connect(
+                        lambda checked=False, p=path, b=base_sub: self._extract_archive(
+                            [p], prompt=False, custom_dest=os.path.join(os.path.dirname(p), b), create_subfolder=False))
+
+            if n > 1 and all(_is_decompressible_archive(p) for p in sel_paths):
+                menu.addAction("Extract All…").triggered.connect(
+                    lambda checked=False, ps=sel_paths: self._extract_archive(ps, prompt=True))
+                menu.addAction("Extract Each Archive to Subfolder").triggered.connect(
+                    lambda checked=False, ps=sel_paths: self._extract_archive(
+                        ps, prompt=False, custom_dest=os.path.dirname(ps[0]), create_subfolder=True))
+                menu.addAction("Extract All Here").triggered.connect(
+                    lambda checked=False, ps=sel_paths: self._extract_archive(
+                        ps, prompt=False, custom_dest=os.path.dirname(ps[0]), create_subfolder=False))
+
             menu.addSeparator()
             # ── Compress ──────────────────────────────────────────────────────
             targets = sel_paths if n > 1 else [path]
@@ -5785,6 +6257,94 @@ class TabPane(QWidget):
             subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except Exception as e:
             QMessageBox.critical(self, "Compress", f"Failed to launch {binary}:\n{e}")
+
+    def _cmd_extract(self):
+        """Action for the 'Extract all' command bar button."""
+        sel = self._selected_paths()
+        archives = [p for p in sel if _is_decompressible_archive(p)]
+        if archives:
+            self._extract_archive(archives, prompt=True)
+
+    def _extract_archive(self, archive_paths: list[str], prompt: bool = True,
+                         custom_dest: str | None = None, create_subfolder: bool = True):
+        """Decompress archive(s) with Windows Explorer workflow.
+
+        prompt: If True, opens the ExtractDialog allowing user to choose destination
+                and toggle whether to show files when complete.
+        custom_dest: Explicit destination folder (skips prompt if prompt=False).
+        create_subfolder: If True, extracts into a subfolder named after the archive.
+        """
+        if not archive_paths:
+            return
+
+        show_after = True
+        dest_dir = custom_dest
+
+        if prompt:
+            if len(archive_paths) == 1:
+                dlg = ExtractDialog(archive_paths[0], default_dest=custom_dest, parent=self)
+            else:
+                curr_dir = self.address_bar.text() or os.path.dirname(archive_paths[0])
+                dlg = ExtractDialog(archive_paths[0], default_dest=curr_dir, parent=self)
+                dlg.setWindowTitle("Extract Archives")
+
+            if dlg.exec() != QDialog.DialogCode.Accepted:
+                return
+            dest_dir = dlg.destination()
+            show_after = dlg.show_extracted()
+            create_subfolder = (len(archive_paths) > 1)
+        elif not dest_dir:
+            first = archive_paths[0]
+            parent_dir = os.path.dirname(first)
+            if len(archive_paths) == 1 and create_subfolder:
+                dest_dir = os.path.join(parent_dir, _get_archive_basename(first))
+                create_subfolder = False
+            else:
+                dest_dir = parent_dir
+
+        if not dest_dir:
+            return
+
+        # Prepare progress dialog
+        if len(archive_paths) == 1:
+            title_name = os.path.basename(archive_paths[0])
+        else:
+            title_name = f"{len(archive_paths)} archives"
+
+        prog_dlg = ExtractProgressDialog(title_name, dest_dir, parent=self)
+
+        worker = ExtractWorker(archive_paths, dest_dir, create_subfolders=create_subfolder)
+        thread = QThread()
+        worker.moveToThread(thread)
+
+        _live_threads.add(thread)
+        self._extract_jobs.append((thread, worker))
+
+        thread.started.connect(worker.run)
+        prog_dlg.cancelled.connect(worker.cancel)
+        worker.progress.connect(prog_dlg.update_progress)
+
+        def _on_finished(success: bool, final_dest: str, errors: list):
+            prog_dlg.close()
+            thread.quit()
+            _live_threads.discard(thread)
+            self._extract_jobs = [(t, w) for t, w in self._extract_jobs if t.isRunning()]
+
+            if errors:
+                err_text = "\n".join(f"{os.path.basename(p)}: {msg}" for p, msg in errors)
+                QMessageBox.warning(self, "Extraction Error",
+                                    f"Encountered errors while extracting:\n{err_text}")
+            elif success and show_after and os.path.isdir(final_dest):
+                self.navigate_to(final_dest)
+            else:
+                # Refresh current view
+                self.navigate_to(self.address_bar.text(), push_history=False)
+
+        worker.finished.connect(_on_finished)
+        thread.finished.connect(thread.deleteLater)
+
+        thread.start()
+        prog_dlg.exec()
 
     def _open_in_terminal(self, path: str):
         """Open a terminal emulator in the given directory.

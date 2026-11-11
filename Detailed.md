@@ -639,6 +639,15 @@ QVBoxLayout
 
 **Rename**: `_cmd_rename()` calls `list_view.edit(sel[0])` to start `IconDelegate`'s inline rename editor.
 
+**Decompress / Extract** (`_cmd_extract`, `_extract_archive`, `ExtractWorker`, `ExtractDialog`, `ExtractProgressDialog`):
+Windows Explorer-style decompression supporting `.zip`, `.tar` (including `.tar.gz`, `.tgz`, `.tar.bz2`, `.tbz2`, `.tar.xz`, `.txz`), `.7z` (via `py7zr` with `7z` CLI fallback), and `.bz2`/`.bzip2` (tarballs and standalone compressed files).
+- Context menu options: "Extract All…", "Extract Here", and "Extract to '<archive_name>/'".
+- Multiple selection options: "Extract Each Archive to Subfolder" and "Extract All Here".
+- Command bar button: "Extract all" button dynamically visible when archive(s) are selected.
+- Windows Explorer-style extraction dialog prompting for target destination and "[x] Show extracted files when complete" checkbox.
+- Non-blocking background worker (`ExtractWorker` on `QThread`) with live progress dialog and cancellation.
+- Built-in Zip-Slip and path-traversal safety validation.
+
 **Compress** (`_compress`): searches PATH for `file-roller`, `ark`, `xarchiver`, `peazip`, `engrampa` in order. Builds the appropriate command line for the found manager and launches via `subprocess.Popen`. Shows a warning if none is found.
 
 **Open in Terminal** (`_open_in_terminal(path)`): candidate list: `$TERMINAL` env var, `x-terminal-emulator`, then gnome-terminal, konsole, xfce4-terminal, mate-terminal, tilix, alacritty, kitty, wezterm, xterm. Tries each in order until one succeeds.
@@ -646,8 +655,8 @@ QVBoxLayout
 ### 13.9 Context Menu
 
 **On a file/folder item:**
-Single item: Open, Open in new tab (dirs), Open in Terminal (dirs), Open with submenu (files — lists MIME-matched apps, each as a direct action, plus "Other application…"), Compress, Cut, Copy, Paste (dir targets only), Rename (single), Delete, Properties (single).
-Multiple items: count label, Compress, Cut, Copy, Delete.
+Single item: Open, Open in new tab (dirs), Open in Terminal (dirs), Open with submenu (files — lists MIME-matched apps, each as a direct action, plus "Other application…"), Extract All… (archives), Extract to submenu (archives — "Extract Here", "Extract to '<name>/'"), Compress, Cut, Copy, Paste (dir targets only), Rename (single), Delete, Properties (single).
+Multiple items: count label, Extract Each Archive to Subfolder / Extract All Here (if all archives), Compress, Cut, Copy, Delete.
 
 **On empty space:**
 New Folder, New File, Paste (if clipboard non-empty), Open in Terminal, Sort by submenu (Name/Size/Type/Date with checkmarks), Group by Type toggle, Refresh.
