@@ -522,3 +522,82 @@ class TestUIComponents:
 
         with patch.object(fm.QDrag, "exec", return_value=None):
             viewer._tree._start_drag()
+
+    def test_tabpane_views_accept_drops(self, qapp):
+        recent = fm.RecentFiles()
+        favorites = fm.Favorites()
+        tab = fm.TabPane(recent, [], favorites)
+
+        assert tab.list_view.acceptDrops() is True
+        assert tab.list_view.viewport().acceptDrops() is True
+        assert tab.list_view.dragDropMode() == fm.QAbstractItemView.DragDropMode.DragDrop
+
+        assert tab.icon_view.acceptDrops() is True
+        assert tab.icon_view.viewport().acceptDrops() is True
+        assert tab.icon_view.dragDropMode() == fm.QAbstractItemView.DragDropMode.DragDrop
+
+    def test_drag_and_drop_onto_fileview_and_iconview(self, qapp, temp_dir):
+        import json
+        from PyQt6.QtCore import QMimeData, QPoint, QPointF, Qt
+        from PyQt6.QtGui import QDragEnterEvent, QDropEvent
+
+        zip_path = os.path.join(temp_dir, "test_drag.zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("file_list.txt", "content for list view")
+            zf.writestr("file_icon.txt", "content for icon view")
+
+        cur_dir = os.path.join(temp_dir, "cur_dir")
+        os.makedirs(cur_dir, exist_ok=True)
+        sub_dir = os.path.join(cur_dir, "target_subfolder")
+        os.makedirs(sub_dir, exist_ok=True)
+
+        recent = fm.RecentFiles()
+        favorites = fm.Favorites()
+        tab = fm.TabPane(recent, [], favorites)
+        tab.navigate_to(cur_dir)
+        tab.show()
+        for _ in range(30):
+            qapp.processEvents()
+
+        # 1. Drop onto list_view empty space -> extracts into cur_dir
+        mime1 = QMimeData()
+        mime1.setData("application/x-archive-extract", json.dumps({
+            "archive_path": zip_path,
+            "members": ["file_list.txt"],
+        }).encode("utf-8"))
+
+        empty_pos = QPoint(50, 400)
+        qapp.sendEvent(tab.list_view.viewport(), QDragEnterEvent(
+            empty_pos, Qt.DropAction.CopyAction, mime1, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
+        ))
+        qapp.sendEvent(tab.list_view.viewport(), QDropEvent(
+            QPointF(empty_pos), Qt.DropAction.CopyAction, mime1, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
+        ))
+        for _ in range(30):
+            qapp.processEvents()
+
+        assert os.path.exists(os.path.join(cur_dir, "file_list.txt"))
+        assert open(os.path.join(cur_dir, "file_list.txt")).read() == "content for list view"
+
+        # 2. Drop onto icon_view empty space -> extracts into cur_dir
+        tab._view_stack.setCurrentIndex(1)
+        for _ in range(20):
+            qapp.processEvents()
+
+        mime2 = QMimeData()
+        mime2.setData("application/x-archive-extract", json.dumps({
+            "archive_path": zip_path,
+            "members": ["file_icon.txt"],
+        }).encode("utf-8"))
+
+        qapp.sendEvent(tab.icon_view.viewport(), QDragEnterEvent(
+            empty_pos, Qt.DropAction.CopyAction, mime2, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
+        ))
+        qapp.sendEvent(tab.icon_view.viewport(), QDropEvent(
+            QPointF(empty_pos), Qt.DropAction.CopyAction, mime2, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier
+        ))
+        for _ in range(30):
+            qapp.processEvents()
+
+        assert os.path.exists(os.path.join(cur_dir, "file_icon.txt"))
+        assert open(os.path.join(cur_dir, "file_icon.txt")).read() == "content for icon view"

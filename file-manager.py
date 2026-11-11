@@ -2725,6 +2725,7 @@ class FileView(QTreeView):
         super().__init__(parent)
         self.viewport().installEventFilter(self)
         self.setAcceptDrops(True)
+        self.viewport().setAcceptDrops(True)
         self._drag_start_pos  = None
         self._drag_from_icon  = False
 
@@ -2825,7 +2826,7 @@ class FileView(QTreeView):
 
     def dropEvent(self, event):
         if event.mimeData().hasFormat("application/x-archive-extract") or event.mimeData().hasUrls():
-            pos = event.position().toPoint()
+            pos = event.position().toPoint() if hasattr(event, "position") else event.pos()
             idx = self.indexAt(pos)
             dest_dir = ""
             if idx.isValid():
@@ -2921,6 +2922,7 @@ class IconFileView(QListView):
         super().__init__(parent)
         self.viewport().installEventFilter(self)
         self.setAcceptDrops(True)
+        self.viewport().setAcceptDrops(True)
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasFormat("application/x-archive-extract") or event.mimeData().hasUrls():
@@ -2936,7 +2938,7 @@ class IconFileView(QListView):
 
     def dropEvent(self, event):
         if event.mimeData().hasFormat("application/x-archive-extract") or event.mimeData().hasUrls():
-            pos = event.position().toPoint()
+            pos = event.position().toPoint() if hasattr(event, "position") else event.pos()
             idx = self.indexAt(pos)
             dest_dir = ""
             if idx.isValid():
@@ -5660,7 +5662,9 @@ class TabPane(QWidget):
         self.list_view.setIconSize(QSize(22, 22))
         self.list_view.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.list_view.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.list_view.setDragDropMode(QAbstractItemView.DragDropMode.DragOnly)
+        self.list_view.setDragDropMode(QAbstractItemView.DragDropMode.DragDrop)
+        self.list_view.setAcceptDrops(True)
+        self.list_view.viewport().setAcceptDrops(True)
         self.list_view.setEditTriggers(QAbstractItemView.EditTrigger.EditKeyPressed)
 
         self._icon_delegate = IconDelegate(self.model, self.proxy)
@@ -5679,7 +5683,9 @@ class TabPane(QWidget):
         self.icon_view.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.icon_view.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.icon_view.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.icon_view.setDragDropMode(QAbstractItemView.DragDropMode.DragOnly)
+        self.icon_view.setDragDropMode(QAbstractItemView.DragDropMode.DragDrop)
+        self.icon_view.setAcceptDrops(True)
+        self.icon_view.viewport().setAcceptDrops(True)
         self.icon_view.setEditTriggers(QAbstractItemView.EditTrigger.EditKeyPressed)
         self.icon_view.setWordWrap(True)
         # Separate delegate instance — sharing one delegate between two views
@@ -7165,7 +7171,14 @@ class TabPane(QWidget):
             prog_dlg.close()
             thread.quit()
             _live_threads.discard(thread)
-            self._extract_jobs = [(t, w) for t, w in self._extract_jobs if t.isRunning()]
+            active_jobs = []
+            for t, w in self._extract_jobs:
+                try:
+                    if t is not thread and t.isRunning():
+                        active_jobs.append((t, w))
+                except RuntimeError:
+                    pass
+            self._extract_jobs = active_jobs
 
             if errors:
                 err_text = "\n".join(f"{os.path.basename(p)}: {msg}" for p, msg in errors)
