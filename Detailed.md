@@ -639,13 +639,14 @@ QVBoxLayout
 
 **Rename**: `_cmd_rename()` calls `list_view.edit(sel[0])` to start `IconDelegate`'s inline rename editor.
 
-**Decompress / Extract** (`_cmd_extract`, `_extract_archive`, `ExtractWorker`, `ExtractDialog`, `ExtractProgressDialog`):
+**Decompress / Extract** (`_cmd_extract`, `_extract_archive`, `_inspect_and_extract`, `ExtractWorker`, `ExtractDialog`, `ExtractProgressDialog`, `ArchiveInspectDialog`):
 Windows Explorer-style decompression supporting `.zip`, `.tar` (including `.tar.gz`, `.tgz`, `.tar.bz2`, `.tbz2`, `.tar.xz`, `.txz`), `.7z` (via `py7zr` with `7z` CLI fallback), and `.bz2`/`.bzip2` (tarballs and standalone compressed files).
-- Context menu options: "Extract All…", "Extract Here", and "Extract to '<archive_name>/'".
+- Context menu options: "Extract All…", "Extract to" submenu ("Select Files to Extract…", "Extract Here", "Extract to '<archive_name>/'").
+- Selective Extraction Dialog (`ArchiveInspectDialog`): provides an interactive tree of archive contents with individual checkboxes, live search filter, uncompressed file size display, and "Select All" / "Deselect All" helpers. Can be launched directly from context menu or from the Extract Dialog's "Inspect / Select files to extract…" button.
 - Multiple selection options: "Extract Each Archive to Subfolder" and "Extract All Here".
 - Command bar button: "Extract all" button dynamically visible when archive(s) are selected.
 - Windows Explorer-style extraction dialog prompting for target destination and "[x] Show extracted files when complete" checkbox.
-- Non-blocking background worker (`ExtractWorker` on `QThread`) with live progress dialog and cancellation.
+- Non-blocking background worker (`ExtractWorker` on `QThread`) with live progress dialog, selective extraction support (`selected_members`), and cancellation.
 - Built-in Zip-Slip and path-traversal safety validation.
 
 **Compress** (`_compress`): searches PATH for `file-roller`, `ark`, `xarchiver`, `peazip`, `engrampa` in order. Builds the appropriate command line for the found manager and launches via `subprocess.Popen`. Shows a warning if none is found.
@@ -655,7 +656,7 @@ Windows Explorer-style decompression supporting `.zip`, `.tar` (including `.tar.
 ### 13.9 Context Menu
 
 **On a file/folder item:**
-Single item: Open, Open in new tab (dirs), Open in Terminal (dirs), Open with submenu (files — lists MIME-matched apps, each as a direct action, plus "Other application…"), Extract All… (archives), Extract to submenu (archives — "Extract Here", "Extract to '<name>/'"), Compress, Cut, Copy, Paste (dir targets only), Rename (single), Delete, Properties (single).
+Single item: Open, Open in new tab (dirs), Open in Terminal (dirs), Open with submenu (files — lists MIME-matched apps, each as a direct action, plus "Other application…"), Extract All… (archives), Extract to submenu (archives — "Select Files to Extract…", "Extract Here", "Extract to '<name>/'"), Compress, Cut, Copy, Paste (dir targets only), Rename (single), Delete, Properties (single).
 Multiple items: count label, Extract Each Archive to Subfolder / Extract All Here (if all archives), Compress, Cut, Copy, Delete.
 
 **On empty space:**

@@ -309,10 +309,16 @@ Decompression support mimics the Windows 11 File Explorer extraction workflow fo
 - **Supported Formats**: `.zip`, `.tar` (`.tar.gz`, `.tgz`, `.tar.bz2`, `.tbz2`, `.tar.xz`, `.txz`), `.7z` (via `py7zr` with fallback to `7z` CLI), and `.bz2`/`.bzip2` (single file and tarballs).
 - **Windows Explorer Workflow**:
   - Selecting an archive dynamically shows the **"Extract all"** button in the command bar.
-  - Context menu provides **"Extract All…"**, **"Extract Here"**, and **"Extract to '<archive_name>/'"**.
+  - Context menu provides **"Extract All…"**, **"Extract to" -> "Select Files to Extract…"**, **"Extract Here"**, and **"Extract to '<archive_name>/'"**.
   - Selecting multiple archives offers **"Extract Each Archive to Subfolder"** and **"Extract All Here"**.
   - Windows 11-style **Extract Dialog** with destination picker, "Browse…" button, and `[x] Show extracted files when complete` checkbox.
-  - Non-blocking `ExtractWorker` running on a background `QThread` with progress reporting and cancellation support.
+  - **Selective Extraction Dialog** (`ArchiveInspectDialog`):
+    - Accessible directly via context menu ("Extract to" → "Select Files to Extract…") or via the "Inspect / Select files to extract…" button in the Extract Dialog.
+    - Hierarchical tree view displaying files, folders, uncompressed file sizes, and modification timestamps.
+    - Checkbox selection with automatic parent/child state synchronization.
+    - Live text search filter for quick member matching.
+    - "Select All" / "Deselect All" shortcuts and live summary of selected files and total size.
+  - Non-blocking `ExtractWorker` running on a background `QThread` with progress reporting, selective member extraction, and cancellation support.
   - Built-in Zip-Slip path-traversal safety protection.
 
 ---

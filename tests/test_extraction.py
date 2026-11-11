@@ -18,9 +18,13 @@ fm = __import__("file-manager")
 _get_archive_basename = fm._get_archive_basename
 _is_safe_extraction_path = fm._is_safe_extraction_path
 _is_decompressible_archive = fm._is_decompressible_archive
+_format_size = fm._format_size
+_should_extract = fm._should_extract
+_list_archive_members = fm._list_archive_members
 ExtractWorker = fm.ExtractWorker
 ExtractDialog = fm.ExtractDialog
 ExtractProgressDialog = fm.ExtractProgressDialog
+ArchiveInspectDialog = fm.ArchiveInspectDialog
 
 
 @pytest.fixture(scope="session")
@@ -86,6 +90,82 @@ class TestArchiveHelpers:
         with open(txt_path, "w") as f:
             f.write("dummy")
         assert not _is_decompressible_archive(txt_path)
+
+    def test_format_size(self):
+        assert _format_size(None) == ""
+        assert _format_size(-1) == ""
+        assert _format_size(0) == "0 B"
+        assert _format_size(512) == "512 B"
+        assert _format_size(1024) == "1.0 KB"
+        assert _format_size(1024 * 1024) == "1.0 MB"
+        assert _format_size(1024 * 1024 * 1024) == "1.0 GB"
+
+    def test_should_extract(self):
+        # When selected_members is None, all members should be extracted
+        assert _should_extract("any/path.txt", None) is True
+
+        selected = {"docs", "src/main.py", "README.md"}
+        # Exact matches
+        assert _should_extract("docs", selected) is True
+        assert _should_extract("src/main.py", selected) is True
+        assert _should_extract("README.md", selected) is True
+        # Child inside selected directory
+        assert _should_extract("docs/manual.pdf", selected) is True
+        assert _should_extract("docs/sub/guide.txt", selected) is True
+        # Unselected members
+        assert _should_extract("src/other.py", selected) is False
+        assert _should_extract("random.txt", selected) is False
+
+    def test_list_archive_members_zip(self, temp_dir):
+        zip_path = os.path.join(temp_dir, "members.zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("file1.txt", "contents of file 1")
+            zf.writestr("sub/file2.txt", "contents of file 2")
+
+        members = _list_archive_members(zip_path)
+        assert len(members) == 2
+        names = {m["name"] for m in members}
+        assert "file1.txt" in names
+        assert "sub/file2.txt" in names
+        for m in members:
+            if m["name"] == "file1.txt":
+                assert m["size"] == len("contents of file 1")
+                assert not m["is_dir"]
+                assert m["mtime"] is not None
+
+    def test_list_archive_members_tar(self, temp_dir):
+        tar_path = os.path.join(temp_dir, "members.tar.gz")
+        src_file = os.path.join(temp_dir, "tmp.txt")
+        with open(src_file, "w") as f:
+            f.write("tar file content")
+
+        with tarfile.open(tar_path, "w:gz") as tf:
+            tf.add(src_file, arcname="archived_tmp.txt")
+
+        members = _list_archive_members(tar_path)
+        assert len(members) == 1
+        assert members[0]["name"] == "archived_tmp.txt"
+        assert members[0]["size"] == len("tar file content")
+        assert not members[0]["is_dir"]
+
+    def test_list_archive_members_7z(self, temp_dir):
+        try:
+            import py7zr
+        except ImportError:
+            pytest.skip("py7zr not installed")
+
+        sz_path = os.path.join(temp_dir, "members.7z")
+        src_file = os.path.join(temp_dir, "sz_tmp.txt")
+        with open(src_file, "w") as f:
+            f.write("7z file content")
+
+        with py7zr.SevenZipFile(sz_path, "w") as zf:
+            zf.write(src_file, arcname="sz_archived.txt")
+
+        members = _list_archive_members(sz_path)
+        assert len(members) == 1
+        assert members[0]["name"] == "sz_archived.txt"
+        assert members[0]["size"] == len("7z file content")
 
 
 class TestDecompression:
@@ -245,6 +325,77 @@ class TestDecompression:
         success, _, _ = finished_results[0]
         assert success is False
 
+    def test_selective_extract_zip(self, temp_dir):
+        zip_path = os.path.join(temp_dir, "selective.zip")
+        dest_dir = os.path.join(temp_dir, "sel_out_zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("keep.txt", "Extract me")
+            zf.writestr("ignore.txt", "Leave me")
+            zf.writestr("folder/sub.txt", "Keep sub")
+
+        # Select keep.txt and folder
+        worker = ExtractWorker([zip_path], dest_dir, selected_members=["keep.txt", "folder/sub.txt"])
+        finished_results = []
+        worker.finished.connect(lambda ok, d, errs: finished_results.append((ok, d, errs)))
+        worker.run()
+
+        success, _, errors = finished_results[0]
+        assert success is True
+        assert os.path.exists(os.path.join(dest_dir, "keep.txt"))
+        assert os.path.exists(os.path.join(dest_dir, "folder", "sub.txt"))
+        assert not os.path.exists(os.path.join(dest_dir, "ignore.txt"))
+
+    def test_selective_extract_tar(self, temp_dir):
+        tar_path = os.path.join(temp_dir, "selective.tar.gz")
+        dest_dir = os.path.join(temp_dir, "sel_out_tar")
+
+        f1 = os.path.join(temp_dir, "t1.txt")
+        f2 = os.path.join(temp_dir, "t2.txt")
+        with open(f1, "w") as f: f.write("one")
+        with open(f2, "w") as f: f.write("two")
+
+        with tarfile.open(tar_path, "w:gz") as tf:
+            tf.add(f1, arcname="t1.txt")
+            tf.add(f2, arcname="t2.txt")
+
+        worker = ExtractWorker([tar_path], dest_dir, selected_members=["t1.txt"])
+        finished_results = []
+        worker.finished.connect(lambda ok, d, errs: finished_results.append((ok, d, errs)))
+        worker.run()
+
+        success, _, errors = finished_results[0]
+        assert success is True
+        assert os.path.exists(os.path.join(dest_dir, "t1.txt"))
+        assert not os.path.exists(os.path.join(dest_dir, "t2.txt"))
+
+    def test_selective_extract_7z(self, temp_dir):
+        try:
+            import py7zr
+        except ImportError:
+            pytest.skip("py7zr not installed")
+
+        sz_path = os.path.join(temp_dir, "selective.7z")
+        dest_dir = os.path.join(temp_dir, "sel_out_7z")
+
+        f1 = os.path.join(temp_dir, "s1.txt")
+        f2 = os.path.join(temp_dir, "s2.txt")
+        with open(f1, "w") as f: f.write("one")
+        with open(f2, "w") as f: f.write("two")
+
+        with py7zr.SevenZipFile(sz_path, "w") as zf:
+            zf.write(f1, arcname="s1.txt")
+            zf.write(f2, arcname="s2.txt")
+
+        worker = ExtractWorker([sz_path], dest_dir, selected_members=["s1.txt"])
+        finished_results = []
+        worker.finished.connect(lambda ok, d, errs: finished_results.append((ok, d, errs)))
+        worker.run()
+
+        success, _, errors = finished_results[0]
+        assert success is True
+        assert os.path.exists(os.path.join(dest_dir, "s1.txt"))
+        assert not os.path.exists(os.path.join(dest_dir, "s2.txt"))
+
 
 class TestUIComponents:
     def test_extract_dialog(self, qapp, temp_dir):
@@ -259,3 +410,60 @@ class TestUIComponents:
         assert "item5.txt" in prog._status_lbl.text()
         assert prog._progress_bar.value() == 5
         assert prog._progress_bar.maximum() == 10
+
+    def test_archive_inspect_dialog_init_and_selection(self, qapp, temp_dir):
+        zip_path = os.path.join(temp_dir, "inspect.zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("doc.txt", "Document")
+            zf.writestr("src/main.py", "print('hello')")
+
+        dlg = ArchiveInspectDialog(zip_path, default_dest=os.path.join(temp_dir, "out"))
+        assert dlg.destination() == os.path.join(temp_dir, "out")
+        assert dlg.show_extracted() is True
+
+        selected = dlg.selected_members()
+        assert "doc.txt" in selected
+        assert "src/main.py" in selected
+
+    def test_archive_inspect_dialog_toggle_all(self, qapp, temp_dir):
+        zip_path = os.path.join(temp_dir, "toggle.zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("f1.txt", "one")
+            zf.writestr("f2.txt", "two")
+
+        dlg = ArchiveInspectDialog(zip_path)
+        assert len(dlg.selected_members()) > 0
+
+        dlg._set_all_checks(False)
+        assert len(dlg.selected_members()) == 0
+        assert not dlg._btn_extract.isEnabled()
+
+        dlg._set_all_checks(True)
+        assert len(dlg.selected_members()) >= 2
+        assert dlg._btn_extract.isEnabled()
+
+    def test_archive_inspect_dialog_filtering(self, qapp, temp_dir):
+        zip_path = os.path.join(temp_dir, "filter.zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("doc.txt", "text")
+            zf.writestr("image.png", "img")
+
+        dlg = ArchiveInspectDialog(zip_path)
+        # Apply filter for png
+        dlg._apply_filter("png")
+        assert dlg._item_map["image.png"].isHidden() is False
+        assert dlg._item_map["doc.txt"].isHidden() is True
+
+        # Clear filter
+        dlg._apply_filter("")
+        assert dlg._item_map["image.png"].isHidden() is False
+        assert dlg._item_map["doc.txt"].isHidden() is False
+
+    def test_extract_dialog_inspect_flow(self, qapp, temp_dir):
+        zip_path = os.path.join(temp_dir, "flow.zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("f1.txt", "1")
+
+        dlg = ExtractDialog(zip_path)
+        assert dlg.selected_members() is None
+        assert dlg._btn_inspect is not None
