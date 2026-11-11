@@ -16,7 +16,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libegl1 \
     libgl1-mesa-dri \
+    libwayland-client0 \
+    libwayland-cursor0 \
+    libwayland-egl1 \
     libxkbcommon-x11-0 \
+    libxkbcommon0 \
     libxcb-cursor0 \
     libxcb-icccm4 \
     libxcb-image0 \
