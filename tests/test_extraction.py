@@ -601,3 +601,61 @@ class TestUIComponents:
 
         assert os.path.exists(os.path.join(cur_dir, "file_icon.txt"))
         assert open(os.path.join(cur_dir, "file_icon.txt")).read() == "content for icon view"
+
+    def test_extract_to_nonexistent_directory_creates_it_without_prompt(self, qapp, temp_dir):
+        from unittest.mock import patch
+
+        zip_path = os.path.join(temp_dir, "nonexistent_test.zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("test_auto_create.txt", "auto created directory content")
+
+        # Non-existent target directory
+        non_existent_dest = os.path.join(temp_dir, "deeply", "nested", "non_existent_folder")
+        assert not os.path.exists(non_existent_dest)
+
+        # 1. Test ExtractDialog auto-creates destination on accept
+        dlg = ExtractDialog(zip_path, default_dest=non_existent_dest)
+        dlg._path_edit.setText(non_existent_dest)
+        with patch.object(fm.QMessageBox, "question") as mock_question, \
+             patch.object(fm.QMessageBox, "warning") as mock_warning:
+            dlg._on_extract()
+            # Must not show any prompt
+            assert not mock_question.called
+            assert not mock_warning.called
+
+        assert os.path.exists(non_existent_dest)
+
+        # 2. Test extraction into the non-existent destination
+        another_non_existent = os.path.join(temp_dir, "another", "fresh_folder")
+        assert not os.path.exists(another_non_existent)
+
+        recent = fm.RecentFiles()
+        favorites = fm.Favorites()
+        tab = fm.TabPane(recent, [], favorites)
+        with patch.object(fm.QMessageBox, "question") as mock_question, \
+             patch.object(fm.QMessageBox, "warning") as mock_warning:
+            tab._extract_archive([zip_path], prompt=False, custom_dest=another_non_existent,
+                                 create_subfolder=False, show_after=False)
+            for _ in range(30):
+                qapp.processEvents()
+            assert not mock_question.called
+            assert not mock_warning.called
+
+        assert os.path.exists(another_non_existent)
+        extracted_file = os.path.join(another_non_existent, "test_auto_create.txt")
+        assert os.path.exists(extracted_file)
+        assert open(extracted_file).read() == "auto created directory content"
+
+    def test_choose_destination_directory_creates_folder(self, qapp, temp_dir):
+        from unittest.mock import patch
+        _choose_destination_directory = fm._choose_destination_directory
+        target_path = os.path.join(temp_dir, "created_by_chooser")
+        assert not os.path.exists(target_path)
+
+        with patch.object(fm.QFileDialog, "exec", return_value=fm.QDialog.DialogCode.Accepted), \
+             patch.object(fm.QFileDialog, "selectedFiles", return_value=[target_path]), \
+             patch.object(fm.QMessageBox, "question") as mock_question:
+            res = _choose_destination_directory(None, "Select Folder", target_path)
+            assert not mock_question.called
+            assert res == target_path
+            assert os.path.exists(target_path)

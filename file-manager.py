@@ -5046,6 +5046,85 @@ class ArchiveViewerTree(QTreeWidget):
         drag.exec(Qt.DropAction.CopyAction)
 
 
+def _choose_destination_directory(parent=None, caption: str = "Select Destination Folder",
+                                  initial_dir: str = "") -> str:
+    """Open a folder picker that allows choosing or creating a destination folder without prompting.
+
+    If the user selects, types, or specifies a folder path that does not exist, it is created
+    automatically without asking 'Are you sure?' or prompting for confirmation.
+    """
+    start_dir = os.path.abspath(os.path.expanduser(initial_dir)) if initial_dir else os.path.expanduser("~")
+    if not os.path.exists(start_dir):
+        parent_candidate = os.path.dirname(start_dir)
+        while parent_candidate and not os.path.exists(parent_candidate):
+            parent_candidate = os.path.dirname(parent_candidate)
+        launch_dir = parent_candidate or os.path.expanduser("~")
+    else:
+        launch_dir = start_dir
+
+    dlg = QFileDialog(parent, caption, launch_dir)
+    dlg.setFileMode(QFileDialog.FileMode.Directory)
+    dlg.setOption(QFileDialog.Option.ShowDirsOnly, True)
+
+    if initial_dir:
+        base_name = os.path.basename(initial_dir.rstrip("/\\"))
+        if base_name:
+            dlg.selectFile(base_name)
+
+    chosen_result: list[str] = []
+
+    def _on_accept():
+        files = dlg.selectedFiles()
+        if files:
+            target = os.path.abspath(files[0])
+        else:
+            target = os.path.abspath(dlg.directory().absolutePath())
+        try:
+            os.makedirs(target, exist_ok=True)
+        except Exception:
+            pass
+        chosen_result.append(target)
+        dlg.done(QDialog.DialogCode.Accepted)
+
+    # Intercept Choose/Open button and line edit Enter to avoid Qt's "directory not found" prompt
+    for btn in dlg.findChildren(QPushButton):
+        txt = btn.text().lower()
+        if "choose" in txt or "open" in txt or "select" in txt:
+            try:
+                btn.clicked.disconnect()
+            except Exception:
+                pass
+            btn.clicked.connect(_on_accept)
+
+    for le in dlg.findChildren(QLineEdit):
+        try:
+            le.returnPressed.disconnect()
+        except Exception:
+            pass
+        le.returnPressed.connect(_on_accept)
+
+    if dlg.exec() == QDialog.DialogCode.Accepted:
+        if chosen_result:
+            dest = chosen_result[0]
+        else:
+            files = dlg.selectedFiles()
+            dest = os.path.abspath(files[0]) if files else os.path.abspath(dlg.directory().absolutePath())
+        try:
+            os.makedirs(dest, exist_ok=True)
+        except Exception:
+            pass
+        return dest
+    elif chosen_result:
+        dest = chosen_result[0]
+        try:
+            os.makedirs(dest, exist_ok=True)
+        except Exception:
+            pass
+        return dest
+
+    return ""
+
+
 class ArchiveViewer(QWidget):
     """Interactive Archive Viewer window allowing direct drag-and-drop extraction.
 
@@ -5276,9 +5355,13 @@ class ArchiveViewer(QWidget):
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     def _extract_all(self):
-        dest = QFileDialog.getExistingDirectory(self, "Extract All To", self._default_dest)
+        dest = _choose_destination_directory(self, "Extract All To", self._default_dest)
         if not dest:
             return
+        try:
+            os.makedirs(dest, exist_ok=True)
+        except Exception:
+            pass
         worker = ExtractWorker([self._archive_path], dest, create_subfolders=False)
         prog = ExtractProgressDialog(os.path.basename(self._archive_path), dest, parent=self)
         worker.progress.connect(prog.update_progress)
@@ -5296,9 +5379,13 @@ class ArchiveViewer(QWidget):
         if not members:
             QMessageBox.information(self, "No Selection", "Please select one or more files to extract.")
             return
-        dest = QFileDialog.getExistingDirectory(self, "Extract Selected Files To", self._default_dest)
+        dest = _choose_destination_directory(self, "Extract Selected Files To", self._default_dest)
         if not dest:
             return
+        try:
+            os.makedirs(dest, exist_ok=True)
+        except Exception:
+            pass
         worker = ExtractWorker([self._archive_path], dest, create_subfolders=False,
                                selected_members=members, strip_prefixes=True)
         prog = ExtractProgressDialog(os.path.basename(self._archive_path), dest, parent=self)
@@ -5404,7 +5491,7 @@ class ExtractDialog(QDialog):
             "QPushButton:hover { background-color: #106EBE; }"
             "QPushButton:pressed { background-color: #005A9E; }"
         )
-        self._btn_extract.clicked.connect(self.accept)
+        self._btn_extract.clicked.connect(self._on_extract)
         btn_box.addWidget(self._btn_extract)
 
         self._btn_cancel = QPushButton("Cancel")
@@ -5414,6 +5501,15 @@ class ExtractDialog(QDialog):
 
         lay.addLayout(btn_box)
 
+    def _on_extract(self):
+        dest = self.destination()
+        if dest:
+            try:
+                os.makedirs(dest, exist_ok=True)
+            except Exception:
+                pass
+        self.accept()
+
     def _on_inspect(self):
         viewer = ArchiveViewer(self._archive_path, default_dest=self.destination())
         viewer.show()
@@ -5422,8 +5518,8 @@ class ExtractDialog(QDialog):
         self.reject()
 
     def _on_browse(self):
-        curr = self._path_edit.text()
-        chosen = QFileDialog.getExistingDirectory(self, "Select Destination Folder", curr or os.path.expanduser("~"))
+        curr = self._path_edit.text().strip()
+        chosen = _choose_destination_directory(self, "Select Destination Folder", curr or os.path.expanduser("~"))
         if chosen:
             self._path_edit.setText(chosen)
 
@@ -7147,6 +7243,11 @@ class TabPane(QWidget):
         if not dest_dir:
             return
 
+        try:
+            os.makedirs(dest_dir, exist_ok=True)
+        except Exception:
+            pass
+
         # Prepare progress dialog
         if len(archive_paths) == 1:
             title_name = os.path.basename(archive_paths[0])
@@ -7223,7 +7324,13 @@ class TabPane(QWidget):
 
     def _handle_items_dropped(self, target_dir: str, mime_data):
         dest_dir = target_dir or self.address_bar.text()
-        if not dest_dir or not os.path.isdir(dest_dir):
+        if not dest_dir:
+            return
+        try:
+            os.makedirs(dest_dir, exist_ok=True)
+        except Exception:
+            pass
+        if not os.path.isdir(dest_dir):
             return
 
         if mime_data.hasFormat("application/x-archive-extract"):
