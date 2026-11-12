@@ -5178,40 +5178,25 @@ class ArchiveViewer(QWidget):
         self._search_edit.textChanged.connect(self._apply_filter)
         header_box.addWidget(self._search_edit)
 
-        # Extract All button
-        btn_extract_all = QPushButton("Extract All…")
-        btn_extract_all.setStyleSheet(
+        btn_style = (
             "QPushButton { background-color: #0078D4; color: #FFFFFF; font-weight: 600; padding: 6px 14px; border-radius: 4px; }"
             "QPushButton:hover { background-color: #106EBE; }"
             "QPushButton:pressed { background-color: #005A9E; }"
         )
+
+        # Extract Selected button
+        btn_extract_sel = QPushButton("Extract Selected…")
+        btn_extract_sel.setStyleSheet(btn_style)
+        btn_extract_sel.clicked.connect(self._extract_selected_to)
+        header_box.addWidget(btn_extract_sel)
+
+        # Extract All button
+        btn_extract_all = QPushButton("Extract All…")
+        btn_extract_all.setStyleSheet(btn_style)
         btn_extract_all.clicked.connect(self._extract_all)
         header_box.addWidget(btn_extract_all)
 
         lay.addLayout(header_box)
-
-        # ── Drag guidance banner ──────────────────────────────────────────────
-        banner = QFrame()
-        banner.setStyleSheet(
-            "QFrame { background-color: rgba(0, 120, 212, 0.08); "
-            "border: 1px solid rgba(0, 120, 212, 0.28); border-radius: 6px; }"
-        )
-        banner_lay = QHBoxLayout(banner)
-        banner_lay.setContentsMargins(12, 7, 12, 7)
-
-        hint_lbl = QLabel(
-            "💡 <b>Drag</b> any files or folders to the <b>sidebar (left pane)</b> or "
-            "<b>file view (right pane)</b> of the main window to extract them."
-        )
-        hint_lbl.setStyleSheet("font-size: 11px; color: palette(windowText); border: none; background: transparent;")
-        banner_lay.addWidget(hint_lbl, 1)
-
-        btn_extract_sel = QPushButton("Extract Selected…")
-        btn_extract_sel.setStyleSheet("padding: 3px 10px; font-size: 11px;")
-        btn_extract_sel.clicked.connect(self._extract_selected_to)
-        banner_lay.addWidget(btn_extract_sel)
-
-        lay.addWidget(banner)
 
         # ── Tree view ─────────────────────────────────────────────────────────
         self._tree = ArchiveViewerTree(self._archive_path, parent=self)

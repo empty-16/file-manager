@@ -436,6 +436,17 @@ class TestUIComponents:
         viewer._tree.clearSelection()
         assert len(viewer.selected_members()) == 0
 
+        # Verify buttons: Extract Selected and Extract All are both present and prominent
+        btns = viewer.findChildren(fm.QPushButton)
+        btn_texts = [b.text() for b in btns]
+        assert any("Extract Selected" in t for t in btn_texts)
+        assert any("Extract All" in t for t in btn_texts)
+
+        # Verify verbose guidance banner has been removed
+        lbls = viewer.findChildren(fm.QLabel)
+        lbl_texts = [l.text() for l in lbls]
+        assert not any("Drag any files" in t for t in lbl_texts)
+
     def test_archive_viewer_filtering(self, qapp, temp_dir):
         zip_path = os.path.join(temp_dir, "filter.zip")
         with zipfile.ZipFile(zip_path, "w") as zf:
