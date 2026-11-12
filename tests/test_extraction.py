@@ -476,6 +476,14 @@ class TestUIComponents:
         assert dlg.selected_members() is None
         assert dlg._btn_inspect is not None
 
+        abs_p = os.path.abspath(zip_path)
+        dlg._on_inspect()
+        assert abs_p in fm._open_archive_viewers
+        viewer = fm._open_archive_viewers[abs_p]
+        assert viewer.isVisible()
+        viewer.close()
+        assert abs_p not in fm._open_archive_viewers
+
     def test_drag_and_drop_archive_extraction(self, qapp, temp_dir):
         import json
         from PyQt6.QtCore import QMimeData

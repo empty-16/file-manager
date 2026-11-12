@@ -5511,7 +5511,20 @@ class ExtractDialog(QDialog):
         self.accept()
 
     def _on_inspect(self):
-        viewer = ArchiveViewer(self._archive_path, default_dest=self.destination())
+        abs_p = os.path.abspath(self._archive_path)
+        viewer = _open_archive_viewers.get(abs_p)
+        if viewer is not None:
+            try:
+                viewer.show()
+                viewer.raise_()
+                viewer.activateWindow()
+                self.reject()
+                return
+            except RuntimeError:
+                _open_archive_viewers.pop(abs_p, None)
+
+        viewer = ArchiveViewer(abs_p, default_dest=self.destination())
+        _open_archive_viewers[abs_p] = viewer
         viewer.show()
         viewer.raise_()
         viewer.activateWindow()
