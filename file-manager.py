@@ -20,7 +20,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import (
     Qt, QDir, QPoint, QSortFilterProxyModel, QModelIndex,
     QAbstractTableModel, QVariant, QSize, pyqtSignal,
-    QThread, QObject, QTimer, QStorageInfo,
+    QThread, QObject, QTimer, QStorageInfo, QUrl, QMimeData,
 )
 from PyQt6.QtGui import (QAction, QFileSystemModel, QIcon, QColor,
     QPixmap, QPainter, QPainterPath, QFont, QBrush, QPen,
@@ -5137,18 +5137,32 @@ class TabPane(QWidget):
     # ── command bar action helpers ────────────────────────────────────────────
     def _get_clipboard(self):
         win = self.window()
-        if hasattr(win, '_shared_clipboard_mode'):
+        if hasattr(win, '_shared_clipboard_mode') and win._shared_clipboard_paths:
             return win._shared_clipboard_mode, win._shared_clipboard_paths
-        return self._clipboard_mode, self._clipboard_paths
+        if self._clipboard_paths:
+            return self._clipboard_mode, self._clipboard_paths
+        cb = QApplication.clipboard()
+        md = cb.mimeData()
+        if md and md.hasUrls():
+            urls = [u.toLocalFile() for u in md.urls() if u.isLocalFile()]
+            if urls:
+                return "copy", urls
+        return None, []
 
     def _set_clipboard(self, mode, paths):
         win = self.window()
         if hasattr(win, '_shared_clipboard_mode'):
             win._shared_clipboard_mode  = mode
             win._shared_clipboard_paths = paths
+        self._clipboard_mode  = mode
+        self._clipboard_paths = paths
+        cb = QApplication.clipboard()
+        if paths:
+            md = QMimeData()
+            md.setUrls([QUrl.fromLocalFile(p) for p in paths])
+            cb.setMimeData(md)
         else:
-            self._clipboard_mode  = mode
-            self._clipboard_paths = paths
+            cb.clear()
 
     def _cmd_cut(self):
         sel = self._selected_paths()
@@ -5538,8 +5552,15 @@ class TabPane(QWidget):
                 lambda: self._clipboard_set("cut", path))
             menu.addAction("Copy").triggered.connect(
                 lambda: self._clipboard_set("copy", path))
-            if self._clipboard_paths and is_dir and n == 1:
-                menu.addAction("Paste").triggered.connect(lambda: self._paste(path))
+            _, clip_paths = self._get_clipboard()
+            if is_dir and n == 1:
+                paste_act = menu.addAction("Paste into folder")
+                paste_act.triggered.connect(lambda checked=False, p=path: self._paste(p))
+                paste_act.setEnabled(bool(clip_paths))
+            else:
+                paste_act = menu.addAction("Paste")
+                paste_act.triggered.connect(lambda checked=False, cur=self.address_bar.text(): self._paste(cur))
+                paste_act.setEnabled(bool(clip_paths))
             menu.addSeparator()
             if n == 1:
                 def _start_rename(checked=False, pi=proxy_index):
@@ -5555,9 +5576,11 @@ class TabPane(QWidget):
             cur = self.address_bar.text()
             menu.addAction("New Folder").triggered.connect(lambda: self._new_folder(cur))
             menu.addAction("New File").triggered.connect(lambda: self._new_file(cur))
-            if self._clipboard_paths:
-                menu.addSeparator()
-                menu.addAction("Paste").triggered.connect(lambda: self._paste(cur))
+            menu.addSeparator()
+            paste_act = menu.addAction("Paste")
+            paste_act.triggered.connect(lambda checked=False, p=cur: self._paste(p))
+            _, clip_paths = self._get_clipboard()
+            paste_act.setEnabled(bool(clip_paths))
             menu.addSeparator()
             menu.addAction("Open in Terminal").triggered.connect(
                 lambda checked=False, p=cur: self._open_in_terminal(p))
@@ -5836,13 +5859,29 @@ class TabPane(QWidget):
     def _clipboard_set(self, mode, path):
         sel = self._selected_paths()
         self._set_clipboard(mode, sel if path in sel else [path])
+        self._refresh_cmd_bar()
 
     def _paste(self, dest_dir):
         clip_mode, clip_paths = self._get_clipboard()
+        if not clip_paths or not dest_dir or not os.path.isdir(dest_dir):
+            return
         for src in clip_paths:
+            if not os.path.exists(src):
+                continue
             name = os.path.basename(src)
             dest = os.path.join(dest_dir, name)
-            if os.path.exists(dest):
+            if os.path.abspath(src) == os.path.abspath(dest):
+                if clip_mode == "cut":
+                    continue
+                base, ext = os.path.splitext(name)
+                counter = 1
+                while True:
+                    suffix = " (copy)" if counter == 1 else f" (copy {counter})"
+                    dest = os.path.join(dest_dir, f"{base}{suffix}{ext}")
+                    if not os.path.exists(dest):
+                        break
+                    counter += 1
+            elif os.path.exists(dest):
                 r = QMessageBox.question(self, "Overwrite?",
                     f'"{name}" already exists. Overwrite?',
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
@@ -5858,6 +5897,7 @@ class TabPane(QWidget):
                 QMessageBox.critical(self, "Error", str(e))
         if clip_mode == "cut":
             self._set_clipboard(None, [])
+        self._refresh_cmd_bar()
 
     def _delete(self, path):
         sel = self._selected_paths()
@@ -7273,7 +7313,10 @@ class FileExplorer(QMainWindow):
         super().__init__()
         self.setWindowTitle("File Explorer")
         self.setMinimumSize(1440, 720)
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+        if os.environ.get("FILE_MANAGER_NATIVE_TITLEBAR") == "1":
+            self.setWindowFlags(Qt.WindowType.Window)
+        else:
+            self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint)
         self._maximized = False
         self._drag_pos = None
 
